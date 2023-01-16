@@ -1,7 +1,7 @@
 package com.example.alarmgroups.di
 
-import com.example.alarmgroups.AlarmScheduler
-import com.example.alarmgroups.AlarmSchedulerImpl
+import com.example.alarmgroups.AlarmService
+import com.example.alarmgroups.AlarmServiceImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -14,8 +14,8 @@ abstract class AlarmModule {
 
     @Binds
     @Singleton
-    abstract fun bindAlarmScheduler(
-        alarmSchedulerImpl: AlarmSchedulerImpl
-    ): AlarmScheduler
+    abstract fun bindAlarmService(
+        alarmServiceImpl: AlarmServiceImpl
+    ): AlarmService
 
 }

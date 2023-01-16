@@ -3,17 +3,17 @@ package com.example.alarmgroups
 import android.app.AlarmManager
 import android.app.Application
 import android.app.PendingIntent
-import android.content.Context
 import android.content.Intent
-import androidx.core.content.getSystemService
+import android.util.Log
 import com.example.alarmgroups.domain.Alarm
+import com.example.alarmgroups.receivers.AlarmReceiver
 import java.time.ZoneId
 import javax.inject.Inject
 
-class AlarmSchedulerImpl @Inject constructor(
+class AlarmServiceImpl @Inject constructor(
     private val app: Application,
     private val alarmManager: AlarmManager,
-) : AlarmScheduler {
+) : AlarmService {
 
     override fun scheduleAlarm(alarm: Alarm) {
         setNonRepeatingAlarm(alarm)
@@ -21,6 +21,7 @@ class AlarmSchedulerImpl @Inject constructor(
 
     private fun setNonRepeatingAlarm(alarm: Alarm) {
         val pendingIntent = createPendingIntent(alarm)
+        Log.d("Girish", "setNonRepeatingAlarm: ")
         alarmManager.setExactAndAllowWhileIdle(
             AlarmManager.RTC_WAKEUP,
             alarm.time.atZone(ZoneId.systemDefault()).toEpochSecond() * 1000,

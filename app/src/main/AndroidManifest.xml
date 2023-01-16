@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
+    <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
 
     <application
         android:name=".App"
@@ -30,8 +32,13 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+        <activity
+            android:name=".AlarmAlertActivity"
+            android:launchMode="singleTop"
+            android:showOnLockScreen="true"
+            android:exported="true" />
 
-        <receiver android:name=".AlarmReceiver" />
+        <receiver android:name=".receivers.AlarmReceiver" />
     </application>
 
 </manifest>
