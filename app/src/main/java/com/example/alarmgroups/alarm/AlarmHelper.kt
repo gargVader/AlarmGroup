@@ -1,7 +1,7 @@
-package com.example.alarmgroups
+package com.example.alarmgroups.alarm
 
 import com.example.alarmgroups.domain.Alarm
 
-interface AlarmService {
+interface AlarmHelper {
     fun scheduleAlarm(alarm: Alarm)
 }

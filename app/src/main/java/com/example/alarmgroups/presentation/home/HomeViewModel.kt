@@ -4,7 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.example.alarmgroups.AlarmService
+import com.example.alarmgroups.alarm.AlarmHelper
 import com.example.alarmgroups.domain.Alarm
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.LocalDateTime
@@ -13,7 +13,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val alarmService: AlarmService
+    private val alarmHelper: AlarmHelper
 ) : ViewModel() {
 
     var state by mutableStateOf(HomeScreenState())
@@ -38,7 +38,7 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun scheduleAlarm(alarm: Alarm) {
-        alarmService.scheduleAlarm(alarm)
+        alarmHelper.scheduleAlarm(alarm)
     }
 
 }

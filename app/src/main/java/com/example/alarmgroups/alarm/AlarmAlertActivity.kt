@@ -1,4 +1,4 @@
-package com.example.alarmgroups
+package com.example.alarmgroups.alarm
 
 import android.app.KeyguardManager
 import android.content.Context

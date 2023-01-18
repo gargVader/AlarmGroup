@@ -1,4 +1,4 @@
-package com.example.alarmgroups
+package com.example.alarmgroups.alarm
 
 import android.app.AlarmManager
 import android.app.Application
@@ -6,14 +6,14 @@ import android.app.PendingIntent
 import android.content.Intent
 import android.util.Log
 import com.example.alarmgroups.domain.Alarm
-import com.example.alarmgroups.receivers.AlarmReceiver
+import com.example.alarmgroups.alarm.receivers.AlarmReceiver
 import java.time.ZoneId
 import javax.inject.Inject
 
-class AlarmServiceImpl @Inject constructor(
+class AlarmHelperImpl @Inject constructor(
     private val app: Application,
     private val alarmManager: AlarmManager,
-) : AlarmService {
+) : AlarmHelper {
 
     override fun scheduleAlarm(alarm: Alarm) {
         setNonRepeatingAlarm(alarm)
