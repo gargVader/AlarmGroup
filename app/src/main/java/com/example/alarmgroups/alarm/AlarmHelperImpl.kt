@@ -4,6 +4,7 @@ import android.app.AlarmManager
 import android.app.Application
 import android.app.PendingIntent
 import android.content.Intent
+import android.os.Build
 import android.util.Log
 import com.example.alarmgroups.domain.Alarm
 import com.example.alarmgroups.alarm.receivers.AlarmReceiver
@@ -22,11 +23,15 @@ class AlarmHelperImpl @Inject constructor(
     private fun setNonRepeatingAlarm(alarm: Alarm) {
         val pendingIntent = createPendingIntent(alarm)
         Log.d("Girish", "setNonRepeatingAlarm: ")
-        alarmManager.setExactAndAllowWhileIdle(
-            AlarmManager.RTC_WAKEUP,
-            alarm.time.atZone(ZoneId.systemDefault()).toEpochSecond() * 1000,
-            pendingIntent
-        )
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                alarmManager.setExactAndAllowWhileIdle(
+                    AlarmManager.RTC_WAKEUP,
+                    alarm.time.atZone(ZoneId.systemDefault()).toEpochSecond() * 1000,
+                    pendingIntent
+                )
+            }
+        }
     }
 
     private fun createPendingIntent(alarm: Alarm): PendingIntent {

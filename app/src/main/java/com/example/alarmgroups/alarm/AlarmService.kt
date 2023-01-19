@@ -32,7 +32,7 @@ class AlarmService : Service() {
             Log.d("Girish", "handleMessage: AlarmService")
             super.handleMessage(msg)
             // Open AlarmAlertActivity
-            // TODO: primary key as int
+            // TODO: primary key as notification id
             startForeground(nextInt(), createNotification())
         }
     }

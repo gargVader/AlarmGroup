@@ -8,10 +8,12 @@ import android.util.Log
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import com.example.alarmgroups.presentation.alarm_alert.AlarmAlertScreen
 import com.example.alarmgroups.ui.theme.AlarmGroupsTheme
 
 class AlarmAlertActivity : ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d("Girish", "onCreate: AlarmAlertActivity")
@@ -28,6 +30,7 @@ class AlarmAlertActivity : ComponentActivity() {
         turnScreenOffAndKeyguardOn()
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun turnScreenOnAndKeyguardOff() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
             setShowWhenLocked(true)
@@ -47,7 +50,7 @@ class AlarmAlertActivity : ComponentActivity() {
         }
     }
 
-    fun turnScreenOffAndKeyguardOn() {
+    private fun turnScreenOffAndKeyguardOn() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
             setShowWhenLocked(false)
             setTurnScreenOn(false)
