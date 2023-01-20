@@ -10,6 +10,8 @@ import androidx.compose.material.Button
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -39,10 +41,15 @@ fun HomeScreen(
             Text(text = "Set Alarm")
         }
 
-        LazyColumn(modifier = Modifier.fillMaxSize()) {
-            items(state.alarmList.size) { i ->
-                val alarm = state.alarmList[i]
-                AlarmItem(alarm = alarm)
+
+        if (state.alarmList.isEmpty()) {
+            Text(text = "No alarms set")
+        } else {
+            LazyColumn(modifier = Modifier.fillMaxSize()) {
+                items(state.alarmList.size) { i ->
+                    val alarm = state.alarmList[i]
+                    AlarmItem(alarm = alarm)
+                }
             }
         }
 

@@ -7,7 +7,7 @@ import java.sql.Date
 @Entity
 data class AlarmEntity(
     @PrimaryKey(autoGenerate = true)
-    val id: Int? = null,
+    val id: Long? = null,
     val time: Long,
     val label: String?,
     val isActive: Boolean = true

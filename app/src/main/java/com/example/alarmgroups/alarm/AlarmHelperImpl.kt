@@ -6,8 +6,8 @@ import android.app.PendingIntent
 import android.content.Intent
 import android.os.Build
 import android.util.Log
-import com.example.alarmgroups.domain.Alarm
 import com.example.alarmgroups.alarm.receivers.AlarmReceiver
+import com.example.alarmgroups.domain.Alarm
 import java.time.ZoneId
 import javax.inject.Inject
 
@@ -40,7 +40,7 @@ class AlarmHelperImpl @Inject constructor(
         }
         return PendingIntent.getBroadcast(
             app,
-            alarm.hashCode(),
+            alarm.id!!.toInt(),
             intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )

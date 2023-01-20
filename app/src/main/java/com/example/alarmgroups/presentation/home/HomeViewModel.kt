@@ -12,6 +12,9 @@ import com.example.alarmgroups.domain.Alarm
 import com.example.alarmgroups.domain.repository.AlarmRepository
 import com.example.alarmgroups.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import javax.inject.Inject
@@ -20,7 +23,7 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val alarmHelper: AlarmHelper,
-    private val alarmRepository: AlarmRepository
+    private val repo: AlarmRepository
 ) : ViewModel() {
 
     var state by mutableStateOf(HomeScreenState())
@@ -31,7 +34,7 @@ class HomeViewModel @Inject constructor(
 
     private fun getAllAlarms() {
         viewModelScope.launch {
-            alarmRepository.getAllAlarms().collect { result ->
+            repo.getAllAlarms().collect { result ->
                 when (result) {
                     is Resource.Loading -> {
 
@@ -61,9 +64,10 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    // test func
     @RequiresApi(Build.VERSION_CODES.O)
     fun scheduleAlarmInSeconds(seconds: Int) {
-        scheduleAlarm(
+        createNewAlarm(
             Alarm(
                 time = LocalDateTime.now().plusSeconds(seconds.toLong()),
                 label = "test alarm"
@@ -71,8 +75,20 @@ class HomeViewModel @Inject constructor(
         )
     }
 
-    private fun scheduleAlarm(alarm: Alarm) {
-        alarmHelper.scheduleAlarm(alarm)
+    private fun createNewAlarm(alarm: Alarm) {
+        // Insert in db
+        viewModelScope.launch {
+            repo.insertAlarm(alarm).collect { res ->
+                when (res) {
+                    is Resource.Success -> {
+                        // After insertion complete, schedule alarm
+                        if (res.data != null) {
+                            alarmHelper.scheduleAlarm(alarm.copy(id = res.data))
+                        }
+                    }
+                }
+            }
+        }
     }
 
 }

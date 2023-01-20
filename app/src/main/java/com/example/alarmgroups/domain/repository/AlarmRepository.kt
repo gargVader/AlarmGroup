@@ -8,7 +8,7 @@ interface AlarmRepository {
 
     suspend fun getAllAlarms(): Flow<Resource<List<Alarm>>>
 
-    suspend fun insertAlarm(alarm: Alarm)
+    suspend fun insertAlarm(alarm: Alarm) : Flow<Resource<Long>>
 
     suspend fun getAlarm(id: Int): Flow<Resource<Alarm>>
 

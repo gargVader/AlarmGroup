@@ -29,8 +29,14 @@ class AlarmRepositoryImpl @Inject constructor(
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override suspend fun insertAlarm(alarm: Alarm) {
-        dao.insertAlarm(alarm.toAlarmEntity())
+    override suspend fun insertAlarm(alarm: Alarm): Flow<Resource<Long>> {
+        return flow {
+            emit(Resource.Loading(isLoading = true))
+            val rowId = dao.insertAlarm(alarm.toAlarmEntity())
+            emit(Resource.Success(rowId))
+            emit(Resource.Loading(isLoading = false))
+        }
+
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
