@@ -20,6 +20,10 @@ class AlarmHelperImpl @Inject constructor(
         setNonRepeatingAlarm(alarm)
     }
 
+    override fun unscheduleAlarm(alarm: Alarm) {
+        alarmManager.cancel(createPendingIntent(alarm))
+    }
+
     private fun setNonRepeatingAlarm(alarm: Alarm) {
         val pendingIntent = createPendingIntent(alarm)
         Log.d("Girish", "setNonRepeatingAlarm: ")
