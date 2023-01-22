@@ -4,26 +4,39 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.util.Log
+import com.example.alarmgroups.alarm.AlarmConstants
 import com.example.alarmgroups.alarm.AlarmService
 
 class AlarmReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
         context ?: return
-        val message: String? = intent?.getStringExtra(EXTRA_LABEL)
-        Log.d("Girish", "AlarmReceiver onReceive: $message")
-        val alarmServiceIntent = Intent(context, AlarmService::class.java).apply {
-            putExtra(EXTRA_LABEL, message)
+        intent ?: return
+        val alarmServiceIntent = createAlarmServiceIntent(context, intent)
+        when (intent.action) {
+            AlarmConstants.ACTION_ALARM_FIRED -> {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    context.startForegroundService(alarmServiceIntent)
+                } else {
+                    context.startService(alarmServiceIntent)
+                }
+            }
+
+            AlarmConstants.ACTION_ALARM_DISMISSED -> {
+                context.stopService(alarmServiceIntent)
+            }
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            context.startForegroundService(alarmServiceIntent)
-        }else{
-            context.startService(alarmServiceIntent)
+
+    }
+
+    private fun createAlarmServiceIntent(context: Context, intent: Intent): Intent {
+        val notificationId: Long = intent.getLongExtra(AlarmConstants.EXTRA_NOTIFICATION_ID, -1)
+        val label: String? = intent.getStringExtra(AlarmConstants.EXTRA_LABEL)
+
+        return Intent(context, AlarmService::class.java).apply {
+            putExtra(AlarmConstants.EXTRA_NOTIFICATION_ID, notificationId)
+            putExtra(AlarmConstants.EXTRA_LABEL, label)
         }
     }
 
-    companion object {
-        val EXTRA_LABEL = "ALARM_LABEL"
-    }
 
 }

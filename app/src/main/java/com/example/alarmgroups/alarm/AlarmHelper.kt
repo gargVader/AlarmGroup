@@ -5,4 +5,5 @@ import com.example.alarmgroups.domain.model.Alarm
 interface AlarmHelper {
     fun scheduleAlarm(alarm: Alarm)
     fun unscheduleAlarm(alarm: Alarm)
+    fun stopAlarm()
 }
