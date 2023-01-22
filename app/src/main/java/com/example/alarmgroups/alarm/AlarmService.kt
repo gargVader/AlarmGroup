@@ -1,7 +1,6 @@
 package com.example.alarmgroups.alarm
 
 import android.app.Notification
-import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.PendingIntent.FLAG_IMMUTABLE
 import android.app.PendingIntent.FLAG_UPDATE_CURRENT
@@ -13,7 +12,6 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.example.alarmgroups.R
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 import kotlin.random.Random.Default.nextInt
 
 /**

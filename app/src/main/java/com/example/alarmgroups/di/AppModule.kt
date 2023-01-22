@@ -7,8 +7,7 @@ import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.room.Room
-import com.example.alarmgroups.App
-import com.example.alarmgroups.data.AlarmDatabase
+import com.example.alarmgroups.data.data_source.AlarmDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -34,7 +33,7 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideAlarmDatabase(app: Application) : AlarmDatabase{
+    fun provideAlarmDatabase(app: Application) : AlarmDatabase {
         return Room.databaseBuilder(
             app,
             AlarmDatabase::class.java, "alarmdb"

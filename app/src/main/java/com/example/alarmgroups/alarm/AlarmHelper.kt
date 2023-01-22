@@ -1,6 +1,6 @@
 package com.example.alarmgroups.alarm
 
-import com.example.alarmgroups.domain.Alarm
+import com.example.alarmgroups.domain.model.Alarm
 
 interface AlarmHelper {
     fun scheduleAlarm(alarm: Alarm)

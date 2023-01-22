@@ -2,8 +2,8 @@ package com.example.alarmgroups.mapper
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import com.example.alarmgroups.data.AlarmEntity
-import com.example.alarmgroups.domain.Alarm
+import com.example.alarmgroups.data.model.AlarmEntity
+import com.example.alarmgroups.domain.model.Alarm
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId

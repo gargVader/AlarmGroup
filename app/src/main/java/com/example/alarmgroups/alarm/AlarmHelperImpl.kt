@@ -7,7 +7,7 @@ import android.content.Intent
 import android.os.Build
 import android.util.Log
 import com.example.alarmgroups.alarm.receivers.AlarmReceiver
-import com.example.alarmgroups.domain.Alarm
+import com.example.alarmgroups.domain.model.Alarm
 import java.time.ZoneId
 import javax.inject.Inject
 

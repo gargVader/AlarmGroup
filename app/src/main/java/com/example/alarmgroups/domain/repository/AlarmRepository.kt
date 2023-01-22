@@ -1,18 +1,17 @@
 package com.example.alarmgroups.domain.repository
 
-import com.example.alarmgroups.domain.Alarm
-import com.example.alarmgroups.util.Resource
+import com.example.alarmgroups.domain.model.Alarm
 import kotlinx.coroutines.flow.Flow
 
 interface AlarmRepository {
 
-    suspend fun getAllAlarms(): Flow<Resource<List<Alarm>>>
+    fun getAllAlarms(): Flow<List<Alarm>>
 
-    suspend fun insertAlarm(alarm: Alarm) : Flow<Resource<Long>>
+    suspend fun insertAlarm(alarm: Alarm): Long
 
-    suspend fun getAlarm(id: Int): Flow<Resource<Alarm>>
+    suspend fun getAlarm(id: Long): Alarm?
 
-    suspend fun deleteAlarm(id: Int)
+    suspend fun deleteAlarm(id: Long)
 
     suspend fun deleteAllAlarms()
 

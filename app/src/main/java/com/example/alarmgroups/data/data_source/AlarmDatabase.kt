@@ -1,7 +1,8 @@
-package com.example.alarmgroups.data
+package com.example.alarmgroups.data.data_source
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import com.example.alarmgroups.data.model.AlarmEntity
 
 @Database(
     entities = [AlarmEntity::class],

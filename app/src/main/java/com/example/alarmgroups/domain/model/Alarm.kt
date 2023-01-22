@@ -1,4 +1,4 @@
-package com.example.alarmgroups.domain
+package com.example.alarmgroups.domain.model
 
 import java.time.LocalDateTime
 
