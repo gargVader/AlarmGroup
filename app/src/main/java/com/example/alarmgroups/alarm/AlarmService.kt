@@ -133,9 +133,9 @@ class AlarmService : Service() {
     }
 
     companion object {
-        val ALARM_NOTIFICATION_CHANNEL_ID = "channelId"
-        val ALARM_NOTIFICATION_CHANNEL_NAME = "channelName"
-        val ALARM_NOTIFICATION_CHANNEL_DESCRIPTION = "channelDescription"
+        const val ALARM_NOTIFICATION_CHANNEL_ID = "channelId"
+        const val ALARM_NOTIFICATION_CHANNEL_NAME = "channelName"
+        const val ALARM_NOTIFICATION_CHANNEL_DESCRIPTION = "channelDescription"
     }
 
 }

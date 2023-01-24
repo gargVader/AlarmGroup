@@ -2,28 +2,75 @@ package com.example.alarmgroups.presentation.home
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Button
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Card
+import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.alarmgroups.domain.model.Alarm
+import com.example.alarmgroups.ui.theme.black2
+import com.example.alarmgroups.ui.theme.grayDark
+import com.example.alarmgroups.ui.theme.grayLight
+import java.time.LocalDateTime
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AlarmItem(alarm: Alarm, OnDeleteClicked: () -> Unit) {
-    Row {
-        Column(modifier = Modifier.padding(all = 8.dp)) {
-            Text(text = "${alarm.time.hour}:${alarm.time.minute}")
-            Text(text = alarm.label ?: "")
-            Button(onClick = OnDeleteClicked) {
-                Text(text = "Delete")
-            }
-        }
 
+    var checked = true
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 12.dp, end = 12.dp, top = 8.dp),
+        shape = RoundedCornerShape(32.dp),
+        backgroundColor = black2
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 18.dp, vertical = 16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                if (!alarm.label.isNullOrBlank()) {
+                    Text(
+                        text = alarm.label,
+                        color = if (alarm.isActive) grayLight else grayDark
+                    )
+                }
+                Text(
+                    text = "${alarm.time.hour}:${alarm.time.minute}",
+                    fontSize = 46.sp,
+                    color = if (alarm.isActive) grayLight else grayDark
+                )
+            }
+            Switch(
+                checked = checked,
+                onCheckedChange = { checked = it },
+            )
+        }
     }
+}
+
+@Preview
+@Composable
+fun AlarmItemPreview() {
+    Column() {
+        AlarmItem(alarm = Alarm(1, LocalDateTime.now(), "Wake up", true)) {
+
+        }
+        AlarmItem(alarm = Alarm(1, LocalDateTime.now(), "Wake up", true)) {
+
+        }
+        AlarmItem(alarm = Alarm(1, LocalDateTime.now(), "Wake up", true)) {
+
+        }
+    }
+
 
 }
