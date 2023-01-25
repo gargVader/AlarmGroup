@@ -70,9 +70,24 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun deleteAlarm(id: Long) {
+    // Should also be doable just from id
+    fun deleteAlarm(alarm: Alarm) {
+        unsheduleAlarm(alarm)
         viewModelScope.launch {
-            repo.deleteAlarm(id)
+            repo.deleteAlarm(alarm.id!!)
+        }
+    }
+
+    // Should also be doable just from id
+    fun unsheduleAlarm(alarm: Alarm) {
+        alarmHelper.unscheduleAlarm(alarm)
+    }
+
+    fun deleteAllAlarms() {
+        // unschedule all alarms
+
+        viewModelScope.launch {
+            repo.deleteAllAlarms()
         }
     }
 

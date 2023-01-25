@@ -1,6 +1,8 @@
 package com.example.alarmgroups.presentation.home
 
 import android.annotation.SuppressLint
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
@@ -18,6 +20,7 @@ import androidx.navigation.NavHostController
 import com.example.alarmgroups.presentation.navigation.Screen
 import com.example.alarmgroups.ui.theme.orangeLight
 
+@RequiresApi(Build.VERSION_CODES.O)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun HomeScreen(
@@ -58,6 +61,12 @@ fun HomeScreen(
                 Text(text = "Set Alarm")
             }
 
+            Button(onClick = {
+                viewModel.deleteAllAlarms()
+            }) {
+                Text(text = "Delete All from db")
+            }
+
 
             if (state.alarmList.isEmpty()) {
                 Text(text = "No alarms set")
@@ -65,9 +74,15 @@ fun HomeScreen(
                 LazyColumn(modifier = Modifier.fillMaxSize()) {
                     items(state.alarmList.size) { i ->
                         val alarm = state.alarmList[i]
-                        AlarmItem(alarm = alarm) {
-                            viewModel.deleteAlarm(alarm.id!!)
-                        }
+                        AlarmItem(
+                            alarm = alarm,
+                            onUnscheduleClick = {
+                                viewModel.unsheduleAlarm(alarm)
+                            },
+                            onDeleteClick = {
+                                viewModel.deleteAlarm(state.alarmList[i])
+                            }
+                        )
                     }
                 }
             }

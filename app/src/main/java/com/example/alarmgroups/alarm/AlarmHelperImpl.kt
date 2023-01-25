@@ -52,8 +52,10 @@ class AlarmHelperImpl @Inject constructor(
     private fun createAlarmReceiverIntent(alarm: Alarm): Intent {
         return Intent(AlarmConstants.ACTION_ALARM_FIRED).apply {
             setClass(app, AlarmReceiver::class.java)
+            // 1. put extras
             putExtra(AlarmConstants.EXTRA_NOTIFICATION_ID, alarm.id)
             putExtra(AlarmConstants.EXTRA_LABEL, alarm.label)
+            putExtra(AlarmConstants.EXTRA_IS_ONE_TIME_ALARM, true)
         }
     }
 

@@ -7,23 +7,25 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Switch
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.alarmgroups.domain.model.Alarm
 import com.example.alarmgroups.ui.theme.black2
 import com.example.alarmgroups.ui.theme.grayDark
 import com.example.alarmgroups.ui.theme.grayLight
-import java.time.LocalDateTime
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun AlarmItem(alarm: Alarm, OnDeleteClicked: () -> Unit) {
+fun AlarmItem(
+    alarm: Alarm,
+    onDeleteClick: (id: Long) -> Unit,
+    onUnscheduleClick: (id: Long) -> Unit
+) {
 
-    var checked = true
+    var checked by remember { mutableStateOf(alarm.isActive) }
 
     Card(
         modifier = Modifier
@@ -51,26 +53,11 @@ fun AlarmItem(alarm: Alarm, OnDeleteClicked: () -> Unit) {
             }
             Switch(
                 checked = checked,
-                onCheckedChange = { checked = it },
+                onCheckedChange = {
+                    checked = it
+                    if (!checked) onUnscheduleClick(alarm.id!!)
+                },
             )
         }
     }
-}
-
-@Preview
-@Composable
-fun AlarmItemPreview() {
-    Column() {
-        AlarmItem(alarm = Alarm(1, LocalDateTime.now(), "Wake up", true)) {
-
-        }
-        AlarmItem(alarm = Alarm(1, LocalDateTime.now(), "Wake up", true)) {
-
-        }
-        AlarmItem(alarm = Alarm(1, LocalDateTime.now(), "Wake up", true)) {
-
-        }
-    }
-
-
 }

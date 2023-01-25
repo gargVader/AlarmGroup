@@ -45,4 +45,8 @@ class AlarmRepositoryImpl @Inject constructor(
         dao.deleteAllAlarms()
     }
 
+    override suspend fun updateAlarmActive(id: Long, isActive : Boolean){
+        dao.updateAlarmActive(id, isActive)
+    }
+
 }
