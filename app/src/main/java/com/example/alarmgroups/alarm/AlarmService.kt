@@ -1,9 +1,6 @@
 package com.example.alarmgroups.alarm
 
 import android.app.Notification
-import android.app.PendingIntent
-import android.app.PendingIntent.FLAG_IMMUTABLE
-import android.app.PendingIntent.FLAG_UPDATE_CURRENT
 import android.app.Service
 import android.content.Intent
 import android.os.*
@@ -11,8 +8,11 @@ import android.os.Process.THREAD_PRIORITY_BACKGROUND
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import com.example.alarmgroups.R
-import com.example.alarmgroups.alarm.receivers.AlarmReceiver
+import com.example.alarmgroups.alarm.pendingIntent.alarm_service_pending_intent.createAlarmAlertPendingIntent
+import com.example.alarmgroups.alarm.pendingIntent.alarm_service_pending_intent.createAlarmDismissPendingIntent
+import com.example.alarmgroups.domain.repository.AlarmRepository
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 /**
  * AlarmService is created because the notification shown to user is an ongoing one
@@ -25,6 +25,8 @@ class AlarmService : Service() {
 
     private var serviceLooper: Looper? = null
     private var serviceHandler: ServiceHandler? = null
+    @Inject
+    lateinit var alarmRepository: AlarmRepository
 
     // Handler that receives messages from the thread
     private inner class ServiceHandler(looper: Looper) : Handler(looper) {
@@ -37,7 +39,7 @@ class AlarmService : Service() {
             // Start Notification
             startForeground(
                 notificationId.toInt(),
-                createNotification(label, notificationId.toInt())
+                createNotification(label, notificationId)
             )
             startVibratingAndPlayingSound()
         }
@@ -74,11 +76,11 @@ class AlarmService : Service() {
         stopForeground(STOP_FOREGROUND_REMOVE)
     }
 
-    private fun createNotification(label: String, notificationId: Int): Notification {
+    private fun createNotification(label: String, notificationId: Long): Notification {
         val alarmAlertPendingIntent =
-            createAlarmAlertPendingIntent(pendingIntentId = notificationId)
+            createAlarmAlertPendingIntent(applicationContext, notificationId)
         val alarmDismissPendingIntent =
-            createAlarmDismissPendingIntent(pendingIntentId = notificationId)
+            createAlarmDismissPendingIntent(applicationContext, pendingIntentId = notificationId)
         return NotificationCompat.Builder(applicationContext, ALARM_NOTIFICATION_CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_launcher_background)
             .setContentTitle(label)
@@ -92,36 +94,6 @@ class AlarmService : Service() {
                 alarmDismissPendingIntent
             )
             .build()
-    }
-
-    private fun createAlarmAlertPendingIntent(pendingIntentId: Int): PendingIntent {
-        val alarmAlertIntent = createAlarmAlertIntent()
-        return PendingIntent.getActivity(
-            applicationContext,
-            pendingIntentId,
-            alarmAlertIntent,
-            FLAG_UPDATE_CURRENT or FLAG_IMMUTABLE
-        )
-    }
-
-    private fun createAlarmAlertIntent(): Intent {
-        return Intent(applicationContext, AlarmAlertActivity::class.java)
-    }
-
-    private fun createAlarmDismissPendingIntent(pendingIntentId: Int): PendingIntent {
-        val alarmDismissIntent = createAlarmDismissIntent()
-        return PendingIntent.getBroadcast(
-            applicationContext,
-            pendingIntentId,
-            alarmDismissIntent,
-            FLAG_UPDATE_CURRENT or FLAG_IMMUTABLE
-        )
-    }
-
-    private fun createAlarmDismissIntent(): Intent {
-        return Intent(AlarmConstants.ACTION_ALARM_DISMISSED).apply {
-            setClass(applicationContext, AlarmReceiver::class.java)
-        }
     }
 
     private fun startVibratingAndPlayingSound() {

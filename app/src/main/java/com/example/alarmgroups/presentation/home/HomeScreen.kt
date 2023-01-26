@@ -45,6 +45,7 @@ fun HomeScreen(
         }
     ) {
         Column {
+
             OutlinedTextField(
                 value = viewModel.state.seconds,
                 onValueChange = {
@@ -61,13 +62,12 @@ fun HomeScreen(
                 Text(text = "Set Alarm")
             }
 
+
             Button(onClick = {
                 viewModel.deleteAllAlarms()
             }) {
                 Text(text = "Delete All from db")
             }
-
-
             if (state.alarmList.isEmpty()) {
                 Text(text = "No alarms set")
             } else {
@@ -76,11 +76,15 @@ fun HomeScreen(
                         val alarm = state.alarmList[i]
                         AlarmItem(
                             alarm = alarm,
-                            onUnscheduleClick = {
-                                viewModel.unsheduleAlarm(alarm)
+                            onToggleClick = { isActive ->
+                                if (isActive) {
+                                    viewModel.scheduleAlarm(alarm)
+                                } else {
+                                    viewModel.unscheduleAlarm(alarm)
+                                }
                             },
                             onDeleteClick = {
-                                viewModel.deleteAlarm(state.alarmList[i])
+                                viewModel.deleteAlarm(state.alarmList[i].id!!)
                             }
                         )
                     }

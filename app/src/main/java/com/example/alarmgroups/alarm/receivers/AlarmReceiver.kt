@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.util.Log
 import com.example.alarmgroups.alarm.AlarmConstants
 import com.example.alarmgroups.alarm.AlarmService
 
@@ -31,6 +32,8 @@ class AlarmReceiver : BroadcastReceiver() {
     private fun createAlarmServiceIntent(context: Context, intent: Intent): Intent {
         val notificationId: Long = intent.getLongExtra(AlarmConstants.EXTRA_NOTIFICATION_ID, -1)
         val label: String? = intent.getStringExtra(AlarmConstants.EXTRA_LABEL)
+
+        Log.d("Girish", "AlarmReceiver: ${intent.action} -> $notificationId $label")
 
         return Intent(context, AlarmService::class.java).apply {
             putExtra(AlarmConstants.EXTRA_NOTIFICATION_ID, notificationId)

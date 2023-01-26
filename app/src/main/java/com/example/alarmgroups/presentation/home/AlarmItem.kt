@@ -22,11 +22,8 @@ import com.example.alarmgroups.ui.theme.grayLight
 fun AlarmItem(
     alarm: Alarm,
     onDeleteClick: (id: Long) -> Unit,
-    onUnscheduleClick: (id: Long) -> Unit
+    onToggleClick: (isActive: Boolean) -> Unit
 ) {
-
-    var checked by remember { mutableStateOf(alarm.isActive) }
-
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -52,10 +49,9 @@ fun AlarmItem(
                 )
             }
             Switch(
-                checked = checked,
+                checked = alarm.isActive,
                 onCheckedChange = {
-                    checked = it
-                    if (!checked) onUnscheduleClick(alarm.id!!)
+                    onToggleClick(it)
                 },
             )
         }
