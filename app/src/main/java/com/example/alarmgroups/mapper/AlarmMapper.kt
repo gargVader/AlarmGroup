@@ -4,15 +4,15 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import com.example.alarmgroups.data.model.AlarmEntity
 import com.example.alarmgroups.domain.model.Alarm
-import java.time.Instant
-import java.time.LocalDateTime
-import java.time.ZoneId
+import java.time.LocalTime
 
 @RequiresApi(Build.VERSION_CODES.O)
 fun Alarm.toAlarmEntity(): AlarmEntity {
     return AlarmEntity(
         id = id,
-        time = time.atZone(ZoneId.systemDefault()).toEpochSecond(),
+        timeHour = time.hour,
+        timeMin = time.minute,
+        days = days,
         label = label,
         isActive = isActive,
     )
@@ -22,7 +22,8 @@ fun Alarm.toAlarmEntity(): AlarmEntity {
 fun AlarmEntity.toAlarm(): Alarm {
     return Alarm(
         id = id,
-        time = LocalDateTime.ofInstant(Instant.ofEpochSecond(time), ZoneId.systemDefault()),
+        time = LocalTime.of(timeHour, timeMin),
+        days = days,
         label = label,
         isActive = isActive,
     )

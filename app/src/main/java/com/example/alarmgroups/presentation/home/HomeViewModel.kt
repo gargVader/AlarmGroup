@@ -13,7 +13,7 @@ import com.example.alarmgroups.domain.model.Alarm
 import com.example.alarmgroups.domain.repository.AlarmRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import java.time.LocalDateTime
+import java.time.LocalTime
 import javax.inject.Inject
 
 
@@ -55,7 +55,7 @@ class HomeViewModel @Inject constructor(
     fun scheduleAlarmInSeconds(seconds: Int) {
         createNewAlarm(
             Alarm(
-                time = LocalDateTime.now().plusSeconds(seconds.toLong()),
+                time = LocalTime.now().plusSeconds(seconds.toLong()),
                 label = "test alarm"
             )
         )

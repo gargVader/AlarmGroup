@@ -1,7 +1,6 @@
 package com.example.alarmgroups.presentation.alarm_details
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -16,17 +15,20 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import com.commandiron.wheel_picker_compose.WheelTimePicker
 import com.commandiron.wheel_picker_compose.core.TimeFormat
 import com.example.alarmgroups.R
-import com.example.alarmgroups.ui.theme.grayDark
 import com.example.alarmgroups.ui.theme.grayLight
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun AlarmDetailsScreen(
-    viewModel: AlarmDetailsViewModel = hiltViewModel()
+    viewModel: AlarmDetailsViewModel = hiltViewModel(),
+    navController: NavHostController
 ) {
+
+    val state = viewModel.state
 
     Scaffold(
         topBar = {
@@ -36,7 +38,10 @@ fun AlarmDetailsScreen(
                     .padding(start = 12.dp, end = 12.dp, top = 16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                IconButton(onClick = { /*TODO*/ }) {
+                IconButton(onClick = {
+                    viewModel.onEvent(AlarmDetailsScreenEvents.OnCloseClick)
+                    navController.popBackStack()
+                }) {
                     Icon(
                         imageVector = Icons.Filled.Close,
                         contentDescription = null,
@@ -49,10 +54,13 @@ fun AlarmDetailsScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(text = "Add Alarm")
-                    Text(text = "Alarm in", color = grayDark)
+//                    Text(text = "Alarm in", color = grayDark)
                 }
 
-                IconButton(onClick = { /*TODO*/ }) {
+                IconButton(onClick = {
+                    viewModel.onEvent(AlarmDetailsScreenEvents.OnSaveClick)
+                    navController.popBackStack()
+                }) {
                     Icon(
                         imageVector = Icons.Filled.Check,
                         contentDescription = null,
@@ -73,13 +81,14 @@ fun AlarmDetailsScreen(
                     rowCount = 5,
                     textStyle = TextStyle(fontSize = 36.sp)
                 ) { snappedTime ->
-                    Log.d("Girish", "$snappedTime")
+                    viewModel.onEvent(AlarmDetailsScreenEvents.OnTimeChange(snappedTime))
                 }
             }
 
             OutlinedTextField(
-                value = "",
+                value = state.label,
                 onValueChange = {
+                    viewModel.onEvent(AlarmDetailsScreenEvents.OnLabelChange(it))
                 },
                 label = { Text(text = "label") },
                 modifier = Modifier

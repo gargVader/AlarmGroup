@@ -8,9 +8,6 @@ import androidx.annotation.RequiresApi
 import com.example.alarmgroups.alarm.pendingIntent.alarm_manager_pending_intent.createAlarmReceiverPendingIntentForSchedule
 import com.example.alarmgroups.alarm.pendingIntent.alarm_manager_pending_intent.createAlarmReceiverPendingIntentForUnSchedule
 import com.example.alarmgroups.domain.model.Alarm
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.ZoneId
 import javax.inject.Inject
 
 class AlarmHelperImpl @Inject constructor(
@@ -20,7 +17,12 @@ class AlarmHelperImpl @Inject constructor(
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun scheduleAlarm(alarm: Alarm) {
-        setNonRepeatingAlarm(alarm)
+        alarm.days?.let {
+            it.forEach { dayOfWeek ->
+                setRepeatingAlarm(dayOfWeek, alarm)
+            }
+        } ?: setNonRepeatingAlarm(alarm)
+
     }
 
     override fun unscheduleAlarm(id: Long) {
@@ -32,24 +34,25 @@ class AlarmHelperImpl @Inject constructor(
         app.stopService(Intent(app.applicationContext, AlarmService::class.java))
     }
 
+    private fun setRepeatingAlarm(dayOfWeek: Int, alarm: Alarm) {
+        val alarmReceiverPendingIntent = createAlarmReceiverPendingIntentForSchedule(app, alarm)
+        alarmManager.setRepeating(
+            AlarmManager.RTC_WAKEUP,
+            alarm.getAlarmFirstTriggerMillis(dayOfWeek = dayOfWeek),
+            AlarmConstants.WEEK_INTERVAL_MILLIS,
+            alarmReceiverPendingIntent
+        )
+
+    }
+
     @RequiresApi(Build.VERSION_CODES.O)
     private fun setNonRepeatingAlarm(alarm: Alarm) {
         val alarmReceiverPendingIntent = createAlarmReceiverPendingIntentForSchedule(app, alarm)
         alarmManager.setExactAndAllowWhileIdle(
             AlarmManager.RTC_WAKEUP,
-            getDateAdjustedAlarmTime(alarm).atZone(ZoneId.systemDefault()).toEpochSecond() * 1000,
+            alarm.getAlarmFirstTriggerMillis(),
             alarmReceiverPendingIntent
         )
-    }
-
-    private fun getDateAdjustedAlarmTime(alarm: Alarm): LocalDateTime {
-        val adjustedAlarmTime = LocalDateTime.of(LocalDate.now(), alarm.time.toLocalTime())
-
-        return if (adjustedAlarmTime.isBefore(LocalDateTime.now())) {
-            adjustedAlarmTime.plusDays(1)
-        } else {
-            adjustedAlarmTime
-        }
     }
 
 }

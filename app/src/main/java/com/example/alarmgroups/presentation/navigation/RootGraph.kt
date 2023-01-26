@@ -23,7 +23,7 @@ fun RootGraph(navController: NavHostController) {
         }
 
         composable(route = Screen.AlarmDetailsScreen.route){
-            AlarmDetailsScreen()
+            AlarmDetailsScreen(navController = navController)
         }
 
     }
