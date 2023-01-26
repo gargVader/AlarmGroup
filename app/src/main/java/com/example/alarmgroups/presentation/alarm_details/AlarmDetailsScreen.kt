@@ -1,6 +1,8 @@
 package com.example.alarmgroups.presentation.alarm_details
 
 import android.annotation.SuppressLint
+import android.content.Context
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -9,6 +11,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.DpSize
@@ -19,16 +22,21 @@ import androidx.navigation.NavHostController
 import com.commandiron.wheel_picker_compose.WheelTimePicker
 import com.commandiron.wheel_picker_compose.core.TimeFormat
 import com.example.alarmgroups.R
+import com.example.alarmgroups.presentation.common.HomeAndAlarmDetailsViewModel
 import com.example.alarmgroups.ui.theme.grayLight
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun AlarmDetailsScreen(
-    viewModel: AlarmDetailsViewModel = hiltViewModel(),
+    context: Context = LocalContext.current,
+    viewModel: HomeAndAlarmDetailsViewModel = hiltViewModel(
+        viewModelStoreOwner = (context as ComponentActivity)
+    ),
     navController: NavHostController
 ) {
 
-    val state = viewModel.state
+    val alarmDetailsState = viewModel.alarmDetailsState
+    val commonState = viewModel.commonState
 
     Scaffold(
         topBar = {
@@ -86,7 +94,7 @@ fun AlarmDetailsScreen(
             }
 
             OutlinedTextField(
-                value = state.label,
+                value = alarmDetailsState.label,
                 onValueChange = {
                     viewModel.onEvent(AlarmDetailsScreenEvents.OnLabelChange(it))
                 },

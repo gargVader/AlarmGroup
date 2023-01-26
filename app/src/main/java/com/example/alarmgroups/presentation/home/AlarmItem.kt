@@ -2,6 +2,7 @@ package com.example.alarmgroups.presentation.home
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
@@ -10,6 +11,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.alarmgroups.domain.model.Alarm
@@ -22,12 +24,17 @@ import com.example.alarmgroups.ui.theme.grayLight
 fun AlarmItem(
     alarm: Alarm,
     onDeleteClick: (id: Long) -> Unit,
-    onToggleClick: (isActive: Boolean) -> Unit
+    onToggleClick: (isActive: Boolean) -> Unit,
+    onCardClick: () -> Unit
 ) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 12.dp, end = 12.dp, top = 8.dp),
+            .padding(start = 12.dp, end = 12.dp, top = 8.dp)
+            .clip(RoundedCornerShape(32.dp))
+            .clickable(enabled = true) {
+                onCardClick()
+            },
         shape = RoundedCornerShape(32.dp),
         backgroundColor = black2
     ) {

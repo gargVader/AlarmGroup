@@ -1,5 +1,7 @@
 package com.example.alarmgroups.presentation.home
 
-sealed interface HomeScreenEvents {
+import com.example.alarmgroups.presentation.common.AppEvents
+
+sealed interface HomeScreenEvents : AppEvents {
      data class OnTimeChanged(val time : String) : HomeScreenEvents
 }
