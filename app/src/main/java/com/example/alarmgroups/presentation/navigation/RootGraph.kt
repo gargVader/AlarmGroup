@@ -5,6 +5,8 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 import com.example.alarmgroups.presentation.alarm_details.AlarmDetailsScreen
 import com.example.alarmgroups.presentation.home.HomeScreen
 import com.google.accompanist.navigation.animation.AnimatedNavHost
@@ -29,6 +31,14 @@ fun RootGraph(navController: NavHostController) {
 
         composable(
             route = Screen.AlarmDetailsScreen.route,
+            arguments = listOf(
+                navArgument(
+                    name = ALARM_DETAILS_ALARM_ID
+                ) {
+                    type = NavType.LongType
+                    defaultValue = -1
+                }
+            ),
             enterTransition = {
                 slideIntoContainer(
                     AnimatedContentScope.SlideDirection.Left,
@@ -41,8 +51,9 @@ fun RootGraph(navController: NavHostController) {
                     animationSpec = tween(200)
                 )
             }
-        ) {
-            AlarmDetailsScreen(navController = navController)
+        ) { backStackEntry ->
+            val alarmId = backStackEntry.arguments?.getLong(ALARM_DETAILS_ALARM_ID)
+            AlarmDetailsScreen(navController = navController, alarmId = alarmId)
         }
 
     }

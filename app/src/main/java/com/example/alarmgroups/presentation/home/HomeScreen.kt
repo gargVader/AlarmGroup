@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.example.alarmgroups.presentation.common.HomeAndAlarmDetailsViewModel
+import com.example.alarmgroups.presentation.common.HomeViewModel
 import com.example.alarmgroups.presentation.navigation.Screen
 import com.example.alarmgroups.ui.theme.orangeLight
 
@@ -29,7 +29,7 @@ import com.example.alarmgroups.ui.theme.orangeLight
 @Composable
 fun HomeScreen(
     context: Context = LocalContext.current,
-    viewModel: HomeAndAlarmDetailsViewModel = hiltViewModel(
+    viewModel: HomeViewModel = hiltViewModel(
         viewModelStoreOwner = (context as ComponentActivity)
     ),
     navController: NavHostController
@@ -99,7 +99,9 @@ fun HomeScreen(
                                 viewModel.deleteAlarm(commonState.alarmList[i].id!!)
                             },
                             onCardClick = {
-                                navController.navigate(Screen.AlarmDetailsScreen.route)
+                                navController.navigate(
+                                    Screen.AlarmDetailsScreen.passAlarmId(alarm.id!!)
+                                )
                             }
                         )
                     }

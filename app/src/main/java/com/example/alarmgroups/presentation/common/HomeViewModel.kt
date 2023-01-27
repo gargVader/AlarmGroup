@@ -11,25 +11,21 @@ import androidx.lifecycle.viewModelScope
 import com.example.alarmgroups.alarm.AlarmHelper
 import com.example.alarmgroups.domain.model.Alarm
 import com.example.alarmgroups.domain.repository.AlarmRepository
-import com.example.alarmgroups.presentation.alarm_details.AlarmDetailsScreenEvents
-import com.example.alarmgroups.presentation.alarm_details.AlarmDetailsScreenState
+import com.example.alarmgroups.presentation.alarm_details.AlarmDetailsState
 import com.example.alarmgroups.presentation.home.HomeScreenEvents
-import com.example.alarmgroups.presentation.home.HomeScreenState
+import com.example.alarmgroups.presentation.home.HomeState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.time.LocalTime
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeAndAlarmDetailsViewModel @Inject constructor(
+class HomeViewModel @Inject constructor(
     private val alarmHelper: AlarmHelper,
     private val repo: AlarmRepository
 ) : ViewModel() {
 
-    var homeState by mutableStateOf(HomeScreenState())
-        private set
-
-    var alarmDetailsState by mutableStateOf(AlarmDetailsScreenState())
+    var homeState by mutableStateOf(HomeState())
         private set
 
     var commonState by mutableStateOf(HomeAndAlarmDetailsState())
@@ -39,7 +35,7 @@ class HomeAndAlarmDetailsViewModel @Inject constructor(
         getAllAlarms()
     }
 
-    fun onEvent(event: AppEvents) {
+    fun onEvent(event: HomeScreenEvents) {
         when (event) {
             // HomeScreenEvents
             is HomeScreenEvents.OnTimeChanged -> {
@@ -47,24 +43,8 @@ class HomeAndAlarmDetailsViewModel @Inject constructor(
                     seconds = event.time
                 )
             }
-
-            // AlarmDetailsScreenEvents
-            is AlarmDetailsScreenEvents.OnLabelChange -> {
-                alarmDetailsState = alarmDetailsState.copy(label = event.label)
-            }
-
-            is AlarmDetailsScreenEvents.OnTimeChange -> {
-                alarmDetailsState = alarmDetailsState.copy(time = event.time)
-            }
-
-            is AlarmDetailsScreenEvents.OnSaveClick -> {
-                createNewAlarm(
-                    Alarm(time = alarmDetailsState.time!!, label = alarmDetailsState.label)
-                )
-            }
         }
     }
-
 
     private fun getAllAlarms() {
         viewModelScope.launch {
@@ -74,7 +54,6 @@ class HomeAndAlarmDetailsViewModel @Inject constructor(
             }
         }
     }
-
 
     // test func
     @RequiresApi(Build.VERSION_CODES.O)
