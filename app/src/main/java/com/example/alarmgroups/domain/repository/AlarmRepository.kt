@@ -17,4 +17,6 @@ interface AlarmRepository {
 
     suspend fun updateAlarmActive(id: Long, isActive : Boolean)
 
+    suspend fun updateAlarm(alarm: Alarm)
+
 }

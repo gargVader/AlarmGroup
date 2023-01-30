@@ -1,5 +1,6 @@
 package com.example.alarmgroups.presentation.navigation
 
+import android.util.Log
 import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
@@ -37,6 +38,18 @@ fun RootGraph(navController: NavHostController) {
                 ) {
                     type = NavType.LongType
                     defaultValue = -1
+                },
+                navArgument(
+                    name = ALARM_DETAILS_ALARM_HR
+                ) {
+                    type = NavType.IntType
+                    defaultValue = -1
+                },
+                navArgument(
+                    name = ALARM_DETAILS_ALARM_MIN
+                ) {
+                    type = NavType.IntType
+                    defaultValue = -1
                 }
             ),
             enterTransition = {
@@ -53,7 +66,14 @@ fun RootGraph(navController: NavHostController) {
             }
         ) { backStackEntry ->
             val alarmId = backStackEntry.arguments?.getLong(ALARM_DETAILS_ALARM_ID)
-            AlarmDetailsScreen(navController = navController, alarmId = alarmId)
+            val alarmHr = backStackEntry.arguments?.getInt(ALARM_DETAILS_ALARM_HR)
+            val alarmMin = backStackEntry.arguments?.getInt(ALARM_DETAILS_ALARM_MIN)
+
+            Log.d("Girish", "RootGraph: backStackEntry-> id=$alarmId hr=$alarmHr min=$alarmMin")
+
+            AlarmDetailsScreen(
+                navController = navController,
+            )
         }
 
     }

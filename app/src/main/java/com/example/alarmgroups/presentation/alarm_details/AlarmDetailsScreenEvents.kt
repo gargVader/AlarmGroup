@@ -1,9 +1,8 @@
 package com.example.alarmgroups.presentation.alarm_details
 
-import com.example.alarmgroups.presentation.common.AppEvents
 import java.time.LocalTime
 
-sealed interface AlarmDetailsScreenEvents : AppEvents{
+sealed interface AlarmDetailsScreenEvents {
     data class OnLabelChange(val label: String) : AlarmDetailsScreenEvents
     data class OnTimeChange(val time: LocalTime) : AlarmDetailsScreenEvents
     object OnCloseClick : AlarmDetailsScreenEvents

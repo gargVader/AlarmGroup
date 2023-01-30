@@ -1,4 +1,4 @@
-package com.example.alarmgroups.presentation.common
+package com.example.alarmgroups.presentation.home
 
 import android.os.Build
 import android.util.Log
@@ -11,9 +11,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.alarmgroups.alarm.AlarmHelper
 import com.example.alarmgroups.domain.model.Alarm
 import com.example.alarmgroups.domain.repository.AlarmRepository
-import com.example.alarmgroups.presentation.alarm_details.AlarmDetailsState
-import com.example.alarmgroups.presentation.home.HomeScreenEvents
-import com.example.alarmgroups.presentation.home.HomeState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.time.LocalTime
@@ -25,10 +22,7 @@ class HomeViewModel @Inject constructor(
     private val repo: AlarmRepository
 ) : ViewModel() {
 
-    var homeState by mutableStateOf(HomeState())
-        private set
-
-    var commonState by mutableStateOf(HomeAndAlarmDetailsState())
+    var state by mutableStateOf(HomeState())
         private set
 
     init {
@@ -39,7 +33,7 @@ class HomeViewModel @Inject constructor(
         when (event) {
             // HomeScreenEvents
             is HomeScreenEvents.OnTimeChanged -> {
-                homeState = homeState.copy(
+                state = state.copy(
                     seconds = event.time
                 )
             }
@@ -50,7 +44,7 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             repo.getAllAlarms().collect { alarms ->
                 Log.d("Girish", "getAllAlarms: ViewModel $alarms")
-                commonState = commonState.copy(alarmList = alarms)
+                state = state.copy(alarmList = alarms)
             }
         }
     }

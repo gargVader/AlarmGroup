@@ -20,7 +20,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.example.alarmgroups.presentation.common.HomeViewModel
 import com.example.alarmgroups.presentation.navigation.Screen
 import com.example.alarmgroups.ui.theme.orangeLight
 
@@ -35,8 +34,7 @@ fun HomeScreen(
     navController: NavHostController
 ) {
 
-    val homeState = viewModel.homeState
-    val commonState = viewModel.commonState
+    val state = viewModel.state
 
     Box(modifier = Modifier.fillMaxSize()) {
         Box(
@@ -59,7 +57,7 @@ fun HomeScreen(
         Column {
 
             OutlinedTextField(
-                value = viewModel.homeState.seconds,
+                value = viewModel.state.seconds,
                 onValueChange = {
                     viewModel.onEvent(
                         HomeScreenEvents.OnTimeChanged(it)
@@ -69,7 +67,7 @@ fun HomeScreen(
             )
 
             Button(onClick = {
-                viewModel.scheduleAlarmInSeconds(homeState.seconds.toInt())
+                viewModel.scheduleAlarmInSeconds(state.seconds.toInt())
             }) {
                 Text(text = "Set Alarm")
             }
@@ -80,12 +78,12 @@ fun HomeScreen(
             }) {
                 Text(text = "Delete All from db")
             }
-            if (commonState.alarmList.isEmpty()) {
+            if (state.alarmList.isEmpty()) {
                 Text(text = "No alarms set")
             } else {
                 LazyColumn(modifier = Modifier.fillMaxSize()) {
-                    items(commonState.alarmList.size) { i ->
-                        val alarm = commonState.alarmList[i]
+                    items(state.alarmList.size) { i ->
+                        val alarm = state.alarmList[i]
                         AlarmItem(
                             alarm = alarm,
                             onToggleClick = { isActive ->
@@ -96,11 +94,15 @@ fun HomeScreen(
                                 }
                             },
                             onDeleteClick = {
-                                viewModel.deleteAlarm(commonState.alarmList[i].id!!)
+                                viewModel.deleteAlarm(state.alarmList[i].id!!)
                             },
                             onCardClick = {
                                 navController.navigate(
-                                    Screen.AlarmDetailsScreen.passAlarmId(alarm.id!!)
+                                    Screen.AlarmDetailsScreen.passNavArgs(
+                                        alarmId = alarm.id!!,
+                                        alarmHr = alarm.time.hour,
+                                        alarmMin = alarm.time.minute
+                                    )
                                 )
                             }
                         )

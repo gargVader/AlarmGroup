@@ -38,9 +38,3 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
-/*
-TODO:
-    - AlarmReceiver
-    - Maintain separate modules for different features
- */
