@@ -32,12 +32,15 @@ class AlarmReceiver : BroadcastReceiver() {
     private fun createAlarmServiceIntent(context: Context, intent: Intent): Intent {
         val notificationId: Long = intent.getLongExtra(AlarmConstants.EXTRA_NOTIFICATION_ID, -1)
         val label: String? = intent.getStringExtra(AlarmConstants.EXTRA_LABEL)
+        val isOneTimeAlarm: Boolean =
+            intent.getBooleanExtra(AlarmConstants.EXTRA_IS_ONE_TIME_ALARM, false)
 
         Log.d("Girish", "AlarmReceiver: ${intent.action} -> $notificationId $label")
 
         return Intent(context, AlarmService::class.java).apply {
             putExtra(AlarmConstants.EXTRA_NOTIFICATION_ID, notificationId)
             putExtra(AlarmConstants.EXTRA_LABEL, label)
+            putExtra(AlarmConstants.EXTRA_IS_ONE_TIME_ALARM, isOneTimeAlarm)
         }
     }
 

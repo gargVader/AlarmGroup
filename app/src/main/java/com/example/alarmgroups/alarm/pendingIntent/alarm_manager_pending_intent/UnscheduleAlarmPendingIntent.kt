@@ -23,5 +23,6 @@ fun createAlarmReceiverPendingIntentForUnSchedule(
 private fun createAlarmReceiverIntent(app: Application): Intent {
     return Intent(AlarmConstants.ACTION_ALARM_FIRED).apply {
         setClass(app, AlarmReceiver::class.java)
+        // no need to set extras here
     }
 }

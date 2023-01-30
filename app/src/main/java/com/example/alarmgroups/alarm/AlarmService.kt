@@ -5,6 +5,7 @@ import android.app.Service
 import android.content.Intent
 import android.os.*
 import android.os.Process.THREAD_PRIORITY_BACKGROUND
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import com.example.alarmgroups.R
@@ -12,6 +13,9 @@ import com.example.alarmgroups.alarm.pendingIntent.alarm_service_pending_intent.
 import com.example.alarmgroups.alarm.pendingIntent.alarm_service_pending_intent.createAlarmDismissPendingIntent
 import com.example.alarmgroups.domain.repository.AlarmRepository
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -25,8 +29,9 @@ class AlarmService : Service() {
 
     private var serviceLooper: Looper? = null
     private var serviceHandler: ServiceHandler? = null
+
     @Inject
-    lateinit var alarmRepository: AlarmRepository
+    lateinit var repo: AlarmRepository
 
     // Handler that receives messages from the thread
     private inner class ServiceHandler(looper: Looper) : Handler(looper) {
@@ -35,6 +40,8 @@ class AlarmService : Service() {
 
             val label = message.data.getString(AlarmConstants.EXTRA_LABEL) ?: ""
             val notificationId = message.data.getLong(AlarmConstants.EXTRA_NOTIFICATION_ID)
+            val isOneTimeAlarm: Boolean =
+                message.data.getBoolean(AlarmConstants.EXTRA_IS_ONE_TIME_ALARM)
 
             // Start Notification
             startForeground(
@@ -42,10 +49,14 @@ class AlarmService : Service() {
                 createNotification(label, notificationId)
             )
             startVibratingAndPlayingSound()
+            if (isOneTimeAlarm) {
+                turnOffAlarm(alarmId = notificationId)
+            }
         }
     }
 
     override fun onCreate() {
+        super.onCreate()
         // Create a HandlerThread for the service to run on
         HandlerThread("AlarmServiceThread", THREAD_PRIORITY_BACKGROUND).apply {
             start()
@@ -94,6 +105,12 @@ class AlarmService : Service() {
                 alarmDismissPendingIntent
             )
             .build()
+    }
+
+    private fun turnOffAlarm(alarmId: Long) {
+        CoroutineScope(Dispatchers.IO).launch {
+            repo.updateAlarmActive(alarmId, false)
+        }
     }
 
     private fun startVibratingAndPlayingSound() {
