@@ -1,8 +1,6 @@
 package com.example.alarmgroups.presentation.alarm_details
 
 import android.annotation.SuppressLint
-import android.content.Context
-import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -11,8 +9,6 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
@@ -21,18 +17,17 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.commandiron.wheel_picker_compose.WheelTimePicker
 import com.commandiron.wheel_picker_compose.core.TimeFormat
-import com.example.alarmgroups.R
-import com.example.alarmgroups.presentation.home.HomeViewModel
+import com.example.alarmgroups.alarm.AlarmConstants
 import com.example.alarmgroups.ui.theme.grayLight
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun AlarmDetailsScreen(
-    alarmDetailsViewModel: AlarmDetailsViewModel = hiltViewModel(),
+    viewModel: AlarmDetailsViewModel = hiltViewModel(),
     navController: NavHostController,
 ) {
 
-    val alarmDetailsState = alarmDetailsViewModel.state
+    val state = viewModel.state
 
     Scaffold(
         topBar = {
@@ -43,7 +38,7 @@ fun AlarmDetailsScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 IconButton(onClick = {
-                    alarmDetailsViewModel.onEvent(AlarmDetailsScreenEvents.OnCloseClick)
+                    viewModel.onEvent(AlarmDetailsScreenEvents.OnCloseClick)
                     navController.popBackStack()
                 }) {
                     Icon(
@@ -57,11 +52,11 @@ fun AlarmDetailsScreen(
                     modifier = Modifier.weight(1f),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-//                    Text(text = alarmId?.let { "Edit Alarm" } ?: "Add Alarm")
+                    Text(text = if (state.isEditMode) "Edit Alarm" else "Add Alarm")
                 }
 
                 IconButton(onClick = {
-                    alarmDetailsViewModel.onEvent(AlarmDetailsScreenEvents.OnSaveClick)
+                    viewModel.onEvent(AlarmDetailsScreenEvents.OnSaveClick)
                     navController.popBackStack()
                 }) {
                     Icon(
@@ -78,30 +73,41 @@ fun AlarmDetailsScreen(
 
             Box(contentAlignment = Alignment.TopCenter) {
                 WheelTimePicker(
-                    startTime = alarmDetailsState.time,
+                    startTime = state.time,
                     timeFormat = TimeFormat.AM_PM,
                     textColor = grayLight,
                     size = DpSize(width = 256.dp, height = 256.dp),
                     rowCount = 5,
                     textStyle = TextStyle(fontSize = 36.sp)
                 ) { snappedTime ->
-                    alarmDetailsViewModel.onEvent(AlarmDetailsScreenEvents.OnTimeChange(snappedTime))
+                    viewModel.onEvent(AlarmDetailsScreenEvents.OnTimeChange(snappedTime))
                 }
             }
 
-            OutlinedTextField(
-                value = alarmDetailsState.label,
-                onValueChange = {
-                    alarmDetailsViewModel.onEvent(AlarmDetailsScreenEvents.OnLabelChange(it))
-                },
-                label = { Text(text = "label") },
+            Text(
+                text = "Sun, Mon, Tue",
+                modifier = Modifier.padding(top = 16.dp, bottom = 16.dp)
+            )
+
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(8.dp),
-                leadingIcon = {
-                    Icon(painterResource(id = R.drawable.label), contentDescription = null)
+                    .padding(bottom = 16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                AlarmConstants.DAYS.forEach {
+                    DayItem(text = it[0])
                 }
-            )
+            }
+
+            TextFieldItem(
+                value = state.label,
+                onValueChange = {
+                    viewModel.onEvent(AlarmDetailsScreenEvents.OnLabelChange(it))
+                },
+                onLabelTextDeleteClick = {
+                    viewModel.onEvent(AlarmDetailsScreenEvents.OnLabelTextDeleteClick)
+                })
         }
     }
 

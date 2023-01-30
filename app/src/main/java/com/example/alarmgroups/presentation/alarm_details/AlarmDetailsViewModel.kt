@@ -22,7 +22,7 @@ import javax.inject.Inject
 class AlarmDetailsViewModel @Inject constructor(
     private val alarmHelper: AlarmHelper,
     private val repo: AlarmRepository,
-    private val savedStateHandle: SavedStateHandle,
+    savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
     private val alarmHr: Int = savedStateHandle.get(ALARM_DETAILS_ALARM_HR) ?: -1
@@ -45,6 +45,8 @@ class AlarmDetailsViewModel @Inject constructor(
         viewModelScope.launch {
             val alarm = repo.getAlarm(id = alarmId)
             alarm?.let {
+                // alarm found. So we are in edit mode
+                state = state.copy(isEditMode = true)
                 if (!it.label.isNullOrBlank()) {
                     state = state.copy(label = it.label)
                 }
@@ -56,6 +58,10 @@ class AlarmDetailsViewModel @Inject constructor(
         when (event) {
             is AlarmDetailsScreenEvents.OnLabelChange -> {
                 state = state.copy(label = event.label)
+            }
+
+            is AlarmDetailsScreenEvents.OnLabelTextDeleteClick -> {
+                state = state.copy(label = "")
             }
 
             is AlarmDetailsScreenEvents.OnTimeChange -> {

@@ -5,7 +5,6 @@ import android.app.Service
 import android.content.Intent
 import android.os.*
 import android.os.Process.THREAD_PRIORITY_BACKGROUND
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import com.example.alarmgroups.R

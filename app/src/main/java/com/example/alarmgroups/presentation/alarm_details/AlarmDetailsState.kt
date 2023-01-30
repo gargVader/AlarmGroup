@@ -1,6 +1,5 @@
 package com.example.alarmgroups.presentation.alarm_details
 
-import com.example.alarmgroups.domain.model.Alarm
 import java.time.LocalTime
 
 /*
@@ -12,4 +11,5 @@ then create a new Alarm object upon every state update.
 data class AlarmDetailsState(
     val time: LocalTime = LocalTime.now(),
     val label: String = "",
+    val isEditMode: Boolean = false,
 )
