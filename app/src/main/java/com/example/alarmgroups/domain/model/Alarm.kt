@@ -20,21 +20,22 @@ data class Alarm(
         dayOfWeek: Int? = null, //  dayOfWeek is not null only for repeating alarms
     ): LocalDateTime {
         if (dayOfWeek != null) {
-            val alarmDate = LocalDate.now()
+            var alarmDate = LocalDate.now()
             // Required dayOfWeek is infront
             if (alarmDate.dayOfWeek.value < dayOfWeek) {
                 val daysToAdd = dayOfWeek - alarmDate.dayOfWeek.value
-                alarmDate.plusDays(daysToAdd.toLong())
+                alarmDate = alarmDate.plusDays(daysToAdd.toLong())
             } else {
                 // Required dayOfWeek is behind
                 val daysToAdd = 7 - (alarmDate.dayOfWeek.value - dayOfWeek)
-                alarmDate.plusDays(daysToAdd.toLong())
+                alarmDate = alarmDate.plusDays(daysToAdd.toLong())
             }
             return LocalDateTime.of(alarmDate, time)
         } else {
-            val alarmDateTime = LocalDateTime.of(LocalDate.now(), time)
-            if (alarmDateTime.isBefore(LocalDateTime.now())) {
-                alarmDateTime.plusDays(1)
+            var alarmDateTime = LocalDateTime.of(LocalDate.now(), time)
+            val nowDateTime = LocalDateTime.now()
+            if (alarmDateTime.isBefore(nowDateTime)) {
+                alarmDateTime = alarmDateTime.plusDays(1)
             }
             return alarmDateTime
         }
