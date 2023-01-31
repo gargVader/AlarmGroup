@@ -7,6 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.alarmgroups.alarm.AlarmConstants
 import com.example.alarmgroups.alarm.AlarmHelper
 import com.example.alarmgroups.domain.model.Alarm
 import com.example.alarmgroups.domain.repository.AlarmRepository
@@ -50,6 +51,7 @@ class AlarmDetailsViewModel @Inject constructor(
                 if (!it.label.isNullOrBlank()) {
                     state = state.copy(label = it.label)
                 }
+                state = state.copy(days = it.days)
             }
         }
     }
@@ -71,13 +73,34 @@ class AlarmDetailsViewModel @Inject constructor(
 
             is AlarmDetailsScreenEvents.OnSaveClick -> {
                 if (isAlarmEditMode(alarmId)) {
+                    Log.d("Girish", "onEvent: OnSaveClick days=${state.days}")
                     updateAlarm(
-                        Alarm(id = alarmId, time = state.time!!, label = state.label)
+                        Alarm(
+                            id = alarmId,
+                            time = state.time!!,
+                            label = state.label,
+                            days = state.days
+                        )
                     )
                 } else {
                     createNewAlarm(
-                        Alarm(time = state.time!!, label = state.label)
+                        Alarm(
+                            time = state.time!!,
+                            label = state.label,
+                            days = state.days
+                        )
                     )
+                }
+            }
+
+            is AlarmDetailsScreenEvents.OnDayToggleClick -> {
+                val isDaySelected: Boolean = state.days?.contains(event.day) ?: false
+                state = if (isDaySelected) {
+                    state.copy(days = state.days?.minusElement(event.day))
+                } else {
+                    state.copy(days = state.days?.let {
+                        it.plusElement(event.day)
+                    } ?: listOf(event.day))
                 }
             }
         }
@@ -103,6 +126,14 @@ class AlarmDetailsViewModel @Inject constructor(
         }
     }
 
+    fun getRepeatDaysDisplay() : String{
+        var daysDisplay: String = ""
+        state.days?.forEach {
+            daysDisplay += AlarmConstants.DAYS[it]
+        }
+        return daysDisplay
+    }
+
     private fun isValidHrAndMin(alarmHr: Int, alarmMin: Int): Boolean {
         return (alarmHr != -1) and (alarmMin != -1)
     }
@@ -114,3 +145,13 @@ class AlarmDetailsViewModel @Inject constructor(
     private fun isAlarmEditMode(alarmId: Long): Boolean = isValidAlarmId(alarmId)
 
 }
+
+/*
+TODO:
+    - Use Map in Alarm instead if List<Int>
+    - Fix string generation
+    - Display repeat days on HomeScreen
+    - Display today/tomorrow for one time alarms on HomeScreen
+    - Fix repeating alarms in AlarmHelperImpl
+
+ */

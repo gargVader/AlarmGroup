@@ -1,9 +1,8 @@
 package com.example.alarmgroups.domain.model
 
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.LocalTime
-import java.time.ZoneId
+import android.util.Log
+import java.time.*
+import kotlin.math.log
 
 data class Alarm(
     val id: Long? = null,
@@ -19,31 +18,40 @@ data class Alarm(
     private fun getAlarmFirstTrigger(
         dayOfWeek: Int? = null, //  dayOfWeek is not null only for repeating alarms
     ): LocalDateTime {
+        var alarmDateTime = LocalDateTime.of(LocalDate.now(), time)
+
+        val nowDateTime = LocalDateTime.now()
+        val nowDayOfWeek = nowDateTime.dayOfWeek.value
+        val nowTime = nowDateTime.toLocalTime()
+
+        val isTimeBefore = time < nowTime
+
         if (dayOfWeek != null) {
-            var alarmDate = LocalDate.now()
-            // Required dayOfWeek is infront
-            if (alarmDate.dayOfWeek.value < dayOfWeek) {
-                val daysToAdd = dayOfWeek - alarmDate.dayOfWeek.value
-                alarmDate = alarmDate.plusDays(daysToAdd.toLong())
+
+            val isRequiredDayBefore = dayOfWeek < nowDayOfWeek
+            val isRequiredDaySame = dayOfWeek == nowDayOfWeek
+
+            if (isRequiredDayBefore or (isRequiredDaySame and isTimeBefore)) {
+                // forward it by 7 days
+                val daysToAdd = 7 - (nowDayOfWeek - dayOfWeek)
+                alarmDateTime = alarmDateTime.plusDays(daysToAdd.toLong())
             } else {
-                // Required dayOfWeek is behind
-                val daysToAdd = 7 - (alarmDate.dayOfWeek.value - dayOfWeek)
-                alarmDate = alarmDate.plusDays(daysToAdd.toLong())
+                // set day properly
+                val daysToAdd = dayOfWeek - nowDayOfWeek
+                alarmDateTime = alarmDateTime.plusDays(daysToAdd.toLong())
             }
-            return LocalDateTime.of(alarmDate, time)
         } else {
-            var alarmDateTime = LocalDateTime.of(LocalDate.now(), time)
-            val nowDateTime = LocalDateTime.now()
-            if (alarmDateTime.isBefore(nowDateTime)) {
+            if (isTimeBefore) {
                 alarmDateTime = alarmDateTime.plusDays(1)
             }
-            return alarmDateTime
         }
+        return alarmDateTime
     }
 
     fun getAlarmFirstTriggerMillis(
         dayOfWeek: Int? = null,
     ): Long {
+        Log.d("Girish", "getAlarmFirstTriggerMillis: ${getAlarmFirstTrigger(dayOfWeek)}")
         return getAlarmFirstTrigger(dayOfWeek).atZone(ZoneId.systemDefault())
             .toEpochSecond() * 1000
     }

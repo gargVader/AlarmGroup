@@ -12,4 +12,5 @@ data class AlarmDetailsState(
     val time: LocalTime = LocalTime.now(),
     val label: String = "",
     val isEditMode: Boolean = false,
+    val days: List<Int>? = null,
 )

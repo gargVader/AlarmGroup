@@ -85,7 +85,7 @@ fun AlarmDetailsScreen(
             }
 
             Text(
-                text = "Sun, Mon, Tue",
+                text = viewModel.getRepeatDaysDisplay(),
                 modifier = Modifier.padding(top = 16.dp, bottom = 16.dp)
             )
 
@@ -95,8 +95,11 @@ fun AlarmDetailsScreen(
                     .padding(bottom = 16.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                AlarmConstants.DAYS.forEach {
-                    DayItem(text = it[0])
+                AlarmConstants.DAYS.forEachIndexed { idx, day ->
+                    val isDaySelected: Boolean = state.days?.contains(idx) ?: false
+                    DayItem(text = day[0], isSelected = isDaySelected) {
+                        viewModel.onEvent(AlarmDetailsScreenEvents.OnDayToggleClick(idx))
+                    }
                 }
             }
 

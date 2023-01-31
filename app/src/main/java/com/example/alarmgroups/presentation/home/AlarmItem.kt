@@ -30,7 +30,7 @@ fun AlarmItem(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 12.dp, end = 12.dp, top = 8.dp)
+            .padding(top = 8.dp)
             .clip(RoundedCornerShape(32.dp))
             .clickable(enabled = true) {
                 onCardClick()

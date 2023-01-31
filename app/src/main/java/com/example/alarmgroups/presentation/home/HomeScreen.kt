@@ -15,8 +15,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -54,30 +57,37 @@ fun HomeScreen(
             }
         }
 
-        Column {
-
-            OutlinedTextField(
-                value = viewModel.state.seconds,
-                onValueChange = {
-                    viewModel.onEvent(
-                        HomeScreenEvents.OnTimeChanged(it)
-                    )
-                },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+        Column(modifier = Modifier.padding(top = 16.dp, start = 12.dp, end = 12.dp)) {
+            Text(
+                text = "Alarm",
+                style = TextStyle(
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 22.sp,
+                ),
+                modifier = Modifier.padding(bottom = 8.dp)
             )
-
-            Button(onClick = {
-                viewModel.scheduleAlarmInSeconds(state.seconds.toInt())
-            }) {
-                Text(text = "Set Alarm")
-            }
-
-
-            Button(onClick = {
-                viewModel.deleteAllAlarms()
-            }) {
-                Text(text = "Delete All from db")
-            }
+//            OutlinedTextField(
+//                value = viewModel.state.seconds,
+//                onValueChange = {
+//                    viewModel.onEvent(
+//                        HomeScreenEvents.OnTimeChanged(it)
+//                    )
+//                },
+//                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+//            )
+//
+//            Button(onClick = {
+//                viewModel.scheduleAlarmInSeconds(state.seconds.toInt())
+//            }) {
+//                Text(text = "Set Alarm")
+//            }
+//
+//
+//            Button(onClick = {
+//                viewModel.deleteAllAlarms()
+//            }) {
+//                Text(text = "Delete All from db")
+//            }
             if (state.alarmList.isEmpty()) {
                 Text(text = "No alarms set")
             } else {
