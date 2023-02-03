@@ -5,16 +5,18 @@ import android.app.PendingIntent
 import android.content.Intent
 import com.example.alarmgroups.alarm.AlarmConstants
 import com.example.alarmgroups.alarm.receivers.AlarmReceiver
+import com.example.alarmgroups.domain.model.Alarm
 
 
 fun createAlarmReceiverPendingIntentForUnSchedule(
     app: Application,
-    pendingIntentId: Long
+    alarm: Alarm,
+    dayOfWeek: Int? = null
 ): PendingIntent {
     val alarmReceiverIntent = createAlarmReceiverIntent(app)
     return PendingIntent.getBroadcast(
         app,
-        pendingIntentId.toInt(),
+        generateAlarmIntentId(alarm.id!!.toInt(), dayOfWeek),
         alarmReceiverIntent,
         PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
     )

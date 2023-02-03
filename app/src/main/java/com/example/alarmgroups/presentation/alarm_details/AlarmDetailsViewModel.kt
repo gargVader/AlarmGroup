@@ -96,10 +96,10 @@ class AlarmDetailsViewModel @Inject constructor(
             is AlarmDetailsScreenEvents.OnDayToggleClick -> {
                 val isDaySelected: Boolean = state.days?.contains(event.day) ?: false
                 state = if (isDaySelected) {
-                    state.copy(days = state.days?.minusElement(event.day))
+                    state.copy(days = state.days?.minusElement(event.day)?.sorted())
                 } else {
                     state.copy(days = state.days?.let {
-                        it.plusElement(event.day)
+                        it.plusElement(event.day).sorted()
                     } ?: listOf(event.day))
                 }
             }
@@ -118,7 +118,7 @@ class AlarmDetailsViewModel @Inject constructor(
     private fun updateAlarm(alarm: Alarm) {
         viewModelScope.launch {
             // Unschedule old alarm
-            alarmHelper.unscheduleAlarm(alarm.id!!)
+            alarmHelper.unscheduleAlarm(alarm)
             // Update db
             repo.updateAlarm(alarm)
             // Schedule updated alarm time
@@ -126,10 +126,13 @@ class AlarmDetailsViewModel @Inject constructor(
         }
     }
 
-    fun getRepeatDaysDisplay() : String{
+    fun getRepeatDaysDisplay(): String {
         var daysDisplay: String = ""
-        state.days?.forEach {
-            daysDisplay += AlarmConstants.DAYS[it]
+        state.days?.forEachIndexed { idx, day ->
+            daysDisplay += if (idx==(state.days!!.size - 1))
+                AlarmConstants.DAYS[day]
+            else
+                "${AlarmConstants.DAYS[day]}, "
         }
         return daysDisplay
     }
@@ -148,8 +151,6 @@ class AlarmDetailsViewModel @Inject constructor(
 
 /*
 TODO:
-    - Use Map in Alarm instead if List<Int>
-    - Fix string generation
     - Display repeat days on HomeScreen
     - Display today/tomorrow for one time alarms on HomeScreen
     - Fix repeating alarms in AlarmHelperImpl

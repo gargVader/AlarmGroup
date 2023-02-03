@@ -55,7 +55,7 @@ class HomeViewModel @Inject constructor(
         createNewAlarm(
             Alarm(
                 time = LocalTime.now().plusSeconds(seconds.toLong()),
-                label = "test alarm"
+                label = "test alarm",
             )
         )
     }
@@ -77,26 +77,26 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    // Should also be doable just from id
     fun unscheduleAlarm(alarm: Alarm) {
         Log.d("Girish", "unscheduleAlarm: ${alarm.time.hour}:${alarm.time.minute}")
-        alarmHelper.unscheduleAlarm(alarm.id!!)
+        alarmHelper.unscheduleAlarm(alarm)
         viewModelScope.launch {
-            repo.updateAlarmActive(alarm.id, false)
+            repo.updateAlarmActive(alarm.id!!, false)
         }
     }
 
-    // Should also be doable just from id
-    fun deleteAlarm(id: Long) {
-        alarmHelper.unscheduleAlarm(id)
+    fun deleteAlarm(alarm: Alarm) {
+        alarmHelper.unscheduleAlarm(alarm)
         viewModelScope.launch {
-            repo.deleteAlarm(id)
+            repo.deleteAlarm(alarm.id!!)
         }
     }
 
     fun deleteAllAlarms() {
         // unschedule all alarms
-
+        state.alarmList.forEach {
+            alarmHelper.unscheduleAlarm(it)
+        }
         viewModelScope.launch {
             repo.deleteAllAlarms()
         }

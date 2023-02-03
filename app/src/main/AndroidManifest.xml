@@ -35,12 +35,14 @@
         </activity>
         <activity
             android:name=".alarm.AlarmAlertActivity"
+            android:exported="true"
             android:launchMode="singleTop"
-            android:showOnLockScreen="true"
-            android:exported="true" />
+            android:showOnLockScreen="true" />
 
-        <receiver android:name=".alarm.receivers.AlarmReceiver" />
-        <service android:name=".alarm.AlarmService"/>
+        <receiver
+            android:name=".alarm.receivers.AlarmReceiver"
+            android:exported="true" />
+        <service android:name=".alarm.AlarmService" />
     </application>
 
 </manifest>

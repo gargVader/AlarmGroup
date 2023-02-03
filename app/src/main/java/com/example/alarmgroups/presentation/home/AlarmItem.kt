@@ -12,8 +12,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.alarmgroups.alarm.AlarmConstants
 import com.example.alarmgroups.domain.model.Alarm
 import com.example.alarmgroups.ui.theme.black2
 import com.example.alarmgroups.ui.theme.grayDark
@@ -52,8 +54,17 @@ fun AlarmItem(
                 Text(
                     text = "${alarm.time.hour}:${alarm.time.minute}",
                     fontSize = 46.sp,
+                    fontWeight = if (alarm.isActive) FontWeight.SemiBold else FontWeight.Normal,
                     color = if (alarm.isActive) grayLight else grayDark
                 )
+
+                if (!alarm.days.isNullOrEmpty()){
+                    Text(
+                        text = getRepeatDaysDisplay(alarm.days),
+                        color = if (alarm.isActive) grayLight else grayDark
+                    )
+                }
+
             }
             Switch(
                 checked = alarm.isActive,
@@ -63,4 +74,15 @@ fun AlarmItem(
             )
         }
     }
+}
+
+fun getRepeatDaysDisplay(days : List<Int>): String {
+    var daysDisplay: String = ""
+    days.forEachIndexed { idx, day ->
+        daysDisplay += if (idx == (days.size - 1))
+            AlarmConstants.DAYS[day]
+        else
+            "${AlarmConstants.DAYS[day]}, "
+    }
+    return daysDisplay
 }

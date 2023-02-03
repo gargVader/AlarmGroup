@@ -4,6 +4,7 @@ import android.app.AlarmManager
 import android.app.Application
 import android.content.Intent
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import com.example.alarmgroups.alarm.pendingIntent.alarm_manager_pending_intent.createAlarmReceiverPendingIntentForSchedule
 import com.example.alarmgroups.alarm.pendingIntent.alarm_manager_pending_intent.createAlarmReceiverPendingIntentForUnSchedule
@@ -25,9 +26,13 @@ class AlarmHelperImpl @Inject constructor(
 
     }
 
-    override fun unscheduleAlarm(id: Long) {
+    override fun unscheduleAlarm(alarm: Alarm) {
         // Remove any alarms with a matching Intent
-        alarmManager.cancel(createAlarmReceiverPendingIntentForUnSchedule(app, id))
+        alarm.days?.let {
+            it.forEach { dayOfWeek ->
+                alarmManager.cancel(createAlarmReceiverPendingIntentForUnSchedule(app, alarm, dayOfWeek))
+            }
+        } ?: alarmManager.cancel(createAlarmReceiverPendingIntentForUnSchedule(app, alarm))
     }
 
     override fun stopAlarm() {
@@ -35,8 +40,10 @@ class AlarmHelperImpl @Inject constructor(
     }
 
     private fun setRepeatingAlarm(dayOfWeek: Int, alarm: Alarm) {
-        val alarmReceiverPendingIntent = createAlarmReceiverPendingIntentForSchedule(app, alarm)
-        alarmManager.setRepeating(
+        Log.d("Girish", "setRepeatingAlarm: dayOfWeek=$dayOfWeek, $alarm")
+        val alarmReceiverPendingIntent =
+            createAlarmReceiverPendingIntentForSchedule(app, alarm, dayOfWeek)
+        alarmManager.setInexactRepeating(
             AlarmManager.RTC_WAKEUP,
             alarm.getAlarmFirstTriggerMillis(dayOfWeek = dayOfWeek),
             AlarmConstants.WEEK_INTERVAL_MILLIS,

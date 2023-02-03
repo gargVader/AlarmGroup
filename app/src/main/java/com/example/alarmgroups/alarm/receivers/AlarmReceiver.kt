@@ -38,6 +38,7 @@ class AlarmReceiver : BroadcastReceiver() {
         Log.d("Girish", "AlarmReceiver: ${intent.action} -> $notificationId $label")
 
         return Intent(context, AlarmService::class.java).apply {
+//            putExtras(intent.extras!!)
             putExtra(AlarmConstants.EXTRA_NOTIFICATION_ID, notificationId)
             putExtra(AlarmConstants.EXTRA_LABEL, label)
             putExtra(AlarmConstants.EXTRA_IS_ONE_TIME_ALARM, isOneTimeAlarm)

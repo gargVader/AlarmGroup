@@ -66,28 +66,28 @@ fun HomeScreen(
                 ),
                 modifier = Modifier.padding(bottom = 8.dp)
             )
-//            OutlinedTextField(
-//                value = viewModel.state.seconds,
-//                onValueChange = {
-//                    viewModel.onEvent(
-//                        HomeScreenEvents.OnTimeChanged(it)
-//                    )
-//                },
-//                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-//            )
-//
-//            Button(onClick = {
-//                viewModel.scheduleAlarmInSeconds(state.seconds.toInt())
-//            }) {
-//                Text(text = "Set Alarm")
-//            }
-//
-//
-//            Button(onClick = {
-//                viewModel.deleteAllAlarms()
-//            }) {
-//                Text(text = "Delete All from db")
-//            }
+            OutlinedTextField(
+                value = viewModel.state.seconds,
+                onValueChange = {
+                    viewModel.onEvent(
+                        HomeScreenEvents.OnTimeChanged(it)
+                    )
+                },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+            )
+
+            Button(onClick = {
+                viewModel.scheduleAlarmInSeconds(state.seconds.toInt())
+            }) {
+                Text(text = "Set Alarm")
+            }
+
+
+            Button(onClick = {
+                viewModel.deleteAllAlarms()
+            }) {
+                Text(text = "Delete All from db")
+            }
             if (state.alarmList.isEmpty()) {
                 Text(text = "No alarms set")
             } else {
@@ -104,7 +104,7 @@ fun HomeScreen(
                                 }
                             },
                             onDeleteClick = {
-                                viewModel.deleteAlarm(state.alarmList[i].id!!)
+                                viewModel.deleteAlarm(state.alarmList[i])
                             },
                             onCardClick = {
                                 navController.navigate(
