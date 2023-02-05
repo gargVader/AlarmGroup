@@ -6,13 +6,15 @@ import android.app.PendingIntent.FLAG_UPDATE_CURRENT
 import android.content.Context
 import android.content.Intent
 import com.example.alarmgroups.alarm.AlarmAlertActivity
+import com.example.alarmgroups.alarm.AlarmConstants
 
 
 fun createAlarmAlertPendingIntent(
     applicationContext: Context,
+    label: String,
     pendingIntentId: Long
 ): PendingIntent {
-    val alarmAlertIntent = createAlarmAlertIntent(applicationContext)
+    val alarmAlertIntent = createAlarmAlertIntent(applicationContext, label, pendingIntentId)
     return PendingIntent.getActivity(
         applicationContext,
         pendingIntentId.toInt(),
@@ -21,6 +23,13 @@ fun createAlarmAlertPendingIntent(
     )
 }
 
-private fun createAlarmAlertIntent(applicationContext: Context): Intent {
-    return Intent(applicationContext, AlarmAlertActivity::class.java)
+private fun createAlarmAlertIntent(
+    applicationContext: Context,
+    label: String,
+    notificationId: Long
+): Intent {
+    return Intent(applicationContext, AlarmAlertActivity::class.java).apply {
+        putExtra(AlarmConstants.EXTRA_NOTIFICATION_ID, notificationId)
+        putExtra(AlarmConstants.EXTRA_LABEL, label)
+    }
 }

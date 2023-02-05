@@ -88,7 +88,7 @@ class AlarmService : Service() {
 
     private fun createNotification(label: String, notificationId: Long): Notification {
         val alarmAlertPendingIntent =
-            createAlarmAlertPendingIntent(applicationContext, notificationId)
+            createAlarmAlertPendingIntent(applicationContext, label,  notificationId)
         val alarmDismissPendingIntent =
             createAlarmDismissPendingIntent(applicationContext, pendingIntentId = notificationId)
         return NotificationCompat.Builder(applicationContext, ALARM_NOTIFICATION_CHANNEL_ID)

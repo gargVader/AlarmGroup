@@ -13,18 +13,22 @@ fun createAlarmReceiverPendingIntentForUnSchedule(
     alarm: Alarm,
     dayOfWeek: Int? = null
 ): PendingIntent {
-    val alarmReceiverIntent = createAlarmReceiverIntent(app)
+    val alarmReceiverIntent = createAlarmReceiverIntent(app, alarm)
     return PendingIntent.getBroadcast(
         app,
         generateAlarmIntentId(alarm.id!!.toInt(), dayOfWeek),
         alarmReceiverIntent,
-        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        PendingIntent.FLAG_UPDATE_CURRENT
     )
 }
 
-private fun createAlarmReceiverIntent(app: Application): Intent {
+private fun createAlarmReceiverIntent(app: Application, alarm: Alarm): Intent {
+    val isOneTimeAlarm: Boolean = alarm.days.isNullOrEmpty()
     return Intent(AlarmConstants.ACTION_ALARM_FIRED).apply {
         setClass(app, AlarmReceiver::class.java)
-        // no need to set extras here
+        // 1. put extras
+        putExtra(AlarmConstants.EXTRA_NOTIFICATION_ID, alarm.id)
+        putExtra(AlarmConstants.EXTRA_LABEL, alarm.label)
+        putExtra(AlarmConstants.EXTRA_IS_ONE_TIME_ALARM, isOneTimeAlarm)
     }
 }
