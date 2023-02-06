@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.Build
 import androidx.activity.ComponentActivity
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -12,9 +13,14 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -25,8 +31,12 @@ import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.alarmgroups.presentation.navigation.Screen
+import com.example.alarmgroups.presentation.utils.SwipeActions
+import com.example.alarmgroups.presentation.utils.SwipeActionsConfig
 import com.example.alarmgroups.ui.theme.orangeLight
+import kotlin.math.absoluteValue
 
+@OptIn(ExperimentalMaterialApi::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
@@ -92,6 +102,7 @@ fun HomeScreen(
             if (state.alarmList.isEmpty()) {
                 Text(text = "No alarms set")
             } else {
+
                 LazyColumn(modifier = Modifier.fillMaxSize()) {
 
                     items(
@@ -101,28 +112,67 @@ fun HomeScreen(
                             alarm.id!!
                         }
                     ) { alarm ->
-                        AlarmItem(
-                            alarm = alarm,
-                            onToggleClick = { isActive ->
-                                if (isActive) {
-                                    viewModel.scheduleAlarm(alarm)
-                                } else {
-                                    viewModel.unscheduleAlarm(alarm)
+
+                        SwipeActions(
+                            endActionsConfig = SwipeActionsConfig(
+                                threshold = 0.4f,
+                                background = Color(0xffFF4444),
+                                iconTint = Color.Black,
+                                icon = Icons.Default.Delete,
+                                stayDismissed = true,
+                                onDismiss = {
+                                    viewModel.deleteAlarm(alarm)
                                 }
-                            },
-                            onDeleteClick = {
-                                viewModel.deleteAlarm(alarm)
-                            },
-                            onCardClick = {
-                                navController.navigate(
-                                    Screen.AlarmDetailsScreen.passNavArgs(
-                                        alarmId = alarm.id!!,
-                                        alarmHr = alarm.time.hour,
-                                        alarmMin = alarm.time.minute
-                                    )
-                                )
+                            ),
+                        ) { state ->
+                            val animateCorners by remember {
+                                derivedStateOf {
+                                    state.offset.value.absoluteValue > 30
+                                }
                             }
-                        )
+                            val startCorners by animateDpAsState(
+                                targetValue = when {
+                                    state.dismissDirection == DismissDirection.StartToEnd &&
+                                            animateCorners -> 8.dp
+                                    else -> 0.dp
+                                }
+                            )
+                            val endCorners by animateDpAsState(
+                                targetValue = when {
+                                    state.dismissDirection == DismissDirection.EndToStart &&
+                                            animateCorners -> 8.dp
+                                    else -> 0.dp
+                                }
+                            )
+                            val elevation by animateDpAsState(
+                                targetValue = when {
+                                    animateCorners -> 6.dp
+                                    else -> 2.dp
+                                }
+                            )
+                            AlarmItem(
+                                alarm = alarm,
+                                onToggleClick = { isActive ->
+                                    if (isActive) {
+                                        viewModel.scheduleAlarm(alarm)
+                                    } else {
+                                        viewModel.unscheduleAlarm(alarm)
+                                    }
+                                },
+                                onDeleteClick = {
+                                    viewModel.deleteAlarm(alarm)
+                                },
+                                onCardClick = {
+                                    navController.navigate(
+                                        Screen.AlarmDetailsScreen.passNavArgs(
+                                            alarmId = alarm.id!!,
+                                            alarmHr = alarm.time.hour,
+                                            alarmMin = alarm.time.minute
+                                        )
+                                    )
+                                }
+                            )
+                        }
                     }
                 }
             }
