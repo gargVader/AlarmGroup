@@ -86,6 +86,7 @@ class HomeViewModel @Inject constructor(
     }
 
     fun deleteAlarm(alarm: Alarm) {
+        Log.d("Girish", "deleteAlarm: $alarm")
         alarmHelper.unscheduleAlarm(alarm)
         viewModelScope.launch {
             repo.deleteAlarm(alarm.id!!)

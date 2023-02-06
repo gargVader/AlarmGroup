@@ -7,6 +7,7 @@ import androidx.activity.ComponentActivity
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -92,8 +93,14 @@ fun HomeScreen(
                 Text(text = "No alarms set")
             } else {
                 LazyColumn(modifier = Modifier.fillMaxSize()) {
-                    items(state.alarmList.size) { i ->
-                        val alarm = state.alarmList[i]
+
+                    items(
+                        items = state.alarmList,
+                        key = { alarm ->
+                            // Return a stable + unique key for the item
+                            alarm.id!!
+                        }
+                    ) { alarm ->
                         AlarmItem(
                             alarm = alarm,
                             onToggleClick = { isActive ->
@@ -104,7 +111,7 @@ fun HomeScreen(
                                 }
                             },
                             onDeleteClick = {
-                                viewModel.deleteAlarm(state.alarmList[i])
+                                viewModel.deleteAlarm(alarm)
                             },
                             onCardClick = {
                                 navController.navigate(
