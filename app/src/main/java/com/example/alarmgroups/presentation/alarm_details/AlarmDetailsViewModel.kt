@@ -151,8 +151,12 @@ class AlarmDetailsViewModel @Inject constructor(
 
 /*
 TODO:
-    - Display repeat days on HomeScreen
-    - Display today/tomorrow for one time alarms on HomeScreen
-    - Fix repeating alarms in AlarmHelperImpl
+    - Finish AlarmAlertActivity
+        - Upon notification dismiss click:  In the notification reject action send a Broadcast
+        which then finishes the fullscreen activity.
+        https://stackoverflow.com/questions/69620053/close-full-screen-intent-activity-on-notification-click
+
+        - Upon dismiss button click : Keep a mutable state
+        https://stackoverflow.com/questions/49077746/how-to-finish-activity-from-viewmodel-using-androids-architecture-components
 
  */

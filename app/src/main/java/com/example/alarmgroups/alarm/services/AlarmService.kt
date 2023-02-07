@@ -1,13 +1,15 @@
-package com.example.alarmgroups.alarm
+package com.example.alarmgroups.alarm.services
 
 import android.app.Notification
 import android.app.Service
 import android.content.Intent
+import android.media.MediaPlayer
 import android.os.*
 import android.os.Process.THREAD_PRIORITY_BACKGROUND
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import com.example.alarmgroups.R
+import com.example.alarmgroups.alarm.AlarmConstants
 import com.example.alarmgroups.alarm.pendingIntent.alarm_service_pending_intent.createAlarmAlertPendingIntent
 import com.example.alarmgroups.alarm.pendingIntent.alarm_service_pending_intent.createAlarmDismissPendingIntent
 import com.example.alarmgroups.domain.repository.AlarmRepository
@@ -15,6 +17,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.TimerTask
 import javax.inject.Inject
 
 /**
@@ -28,9 +31,16 @@ class AlarmService : Service() {
 
     private var serviceLooper: Looper? = null
     private var serviceHandler: ServiceHandler? = null
+    private lateinit var vibrationTask : TimerTask
 
     @Inject
     lateinit var repo: AlarmRepository
+
+    @Inject
+    lateinit var mediaPlayer: MediaPlayer
+
+    @Inject
+    lateinit var vibrator: Vibrator
 
     // Handler that receives messages from the thread
     private inner class ServiceHandler(looper: Looper) : Handler(looper) {
@@ -47,7 +57,8 @@ class AlarmService : Service() {
                 notificationId.toInt(),
                 createNotification(label, notificationId)
             )
-            startVibratingAndPlayingSound()
+            startVibration()
+            startSound()
             if (isOneTimeAlarm) {
                 turnOffAlarm(alarmId = notificationId)
             }
@@ -81,7 +92,8 @@ class AlarmService : Service() {
     */
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onDestroy() {
-        stopVibratingAndPlayingSound()
+        stopVibration()
+        stopSound()
         // remove notification
         stopForeground(STOP_FOREGROUND_REMOVE)
     }
@@ -112,11 +124,22 @@ class AlarmService : Service() {
         }
     }
 
-    private fun startVibratingAndPlayingSound() {
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun startVibration(){
+        val pattern: LongArray = longArrayOf(0, 1000, 500)
+        val effect = VibrationEffect.createWaveform(pattern, 0);
+        vibrator.vibrate(effect);
+    }
+
+    private fun stopVibration(){
+        vibrator.cancel()
+    }
+
+    private fun startSound(){
 
     }
 
-    private fun stopVibratingAndPlayingSound() {
+    private fun stopSound(){
 
     }
 

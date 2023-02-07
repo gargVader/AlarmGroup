@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:name=".App"
@@ -44,14 +45,15 @@
             android:name=".alarm.receivers.AlarmReceiver"
             android:exported="true" />
 
-        <receiver android:name=".alarm.receivers.RescheduleAlarmReceiver"
+        <receiver
+            android:name=".alarm.receivers.RescheduleAlarmReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
 
-        <service android:name=".alarm.AlarmService" />
+        <service android:name=".alarm.services.AlarmService" />
     </application>
 
 </manifest>

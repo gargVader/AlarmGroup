@@ -1,5 +1,6 @@
 package com.example.alarmgroups.presentation.alarm_alert
 
 sealed interface AlarmAlertScreenEvents {
-     class OnCancelClicked : AlarmAlertScreenEvents
+     object OnDismissCurrentClick : AlarmAlertScreenEvents
+     object OnDismissAllClick : AlarmAlertScreenEvents
 }

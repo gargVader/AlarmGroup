@@ -6,7 +6,7 @@ import android.content.Intent
 import android.os.Build
 import android.util.Log
 import com.example.alarmgroups.alarm.AlarmConstants
-import com.example.alarmgroups.alarm.AlarmService
+import com.example.alarmgroups.alarm.services.AlarmService
 
 class AlarmReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {

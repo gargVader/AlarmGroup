@@ -5,7 +5,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.os.Build
 import androidx.annotation.RequiresApi
-import com.example.alarmgroups.alarm.AlarmService
+import com.example.alarmgroups.alarm.services.AlarmService
 import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
 
