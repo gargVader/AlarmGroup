@@ -1,4 +1,5 @@
 package com.example.alarmgroups.presentation.alarm_alert
 
-class AlarmAlertScreenState {
-}
+data class AlarmAlertScreenState(
+    val dismissClick: Boolean = false
+)

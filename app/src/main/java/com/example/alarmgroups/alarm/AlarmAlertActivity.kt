@@ -9,17 +9,26 @@ import androidx.compose.material.Surface
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.lifecycleScope
 import com.example.alarmgroups.presentation.alarm_alert.AlarmAlertScreen
+import com.example.alarmgroups.presentation.alarm_alert.AlarmAlertViewModel
 import com.example.alarmgroups.ui.theme.AlarmGroupsTheme
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import java.time.LocalTime
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class AlarmAlertActivity : ComponentActivity() {
+
+    private val viewModel: AlarmAlertViewModel by viewModels()
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,11 +36,20 @@ class AlarmAlertActivity : ComponentActivity() {
         turnScreenOnAndKeyguardOff()
 
         val label = intent.getStringExtra(AlarmConstants.EXTRA_LABEL) ?: ""
-        val notificationId :Long = intent.getLongExtra(AlarmConstants.EXTRA_NOTIFICATION_ID, -1)
+        val notificationId: Long = intent.getLongExtra(AlarmConstants.EXTRA_NOTIFICATION_ID, -1)
 
         savedInstanceState?.putLong(AlarmConstants.EXTRA_NOTIFICATION_ID, notificationId)
 
         val nowLocalTime = LocalTime.now()
+
+        lifecycleScope.launch {
+            viewModel.uiState.collect {
+                if (it.dismissClick){
+                    finish()
+                }
+            }
+        }
+
 
         setContent {
             AlarmGroupsTheme {
@@ -39,7 +57,7 @@ class AlarmAlertActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    AlarmAlertScreen(nowLocalTime, label)
+                    AlarmAlertScreen(nowLocalTime, label, viewModel)
                 }
             }
         }

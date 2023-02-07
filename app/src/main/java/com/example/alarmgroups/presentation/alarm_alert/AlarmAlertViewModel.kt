@@ -13,6 +13,10 @@ import com.example.alarmgroups.alarm.AlarmConstants
 import com.example.alarmgroups.alarm.AlarmHelper
 import com.example.alarmgroups.alarm.services.AlarmService
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @HiltViewModel
@@ -23,6 +27,11 @@ class AlarmAlertViewModel @Inject constructor(
 ) : ViewModel() {
 
     var state by mutableStateOf(AlarmAlertScreenState())
+        private set
+
+    private val _uiState = MutableStateFlow(AlarmAlertScreenState())
+    val uiState: StateFlow<AlarmAlertScreenState> = _uiState.asStateFlow()
+
     private val notificationId: Long = savedStateHandle[AlarmConstants.EXTRA_NOTIFICATION_ID] ?: -1
 
 
@@ -33,10 +42,19 @@ class AlarmAlertViewModel @Inject constructor(
     fun onEvent(event: AlarmAlertScreenEvents) {
         when (event) {
             is AlarmAlertScreenEvents.OnDismissCurrentClick -> {
-                val alarmServiceIntent = Intent(app, AlarmService::class.java)
-                app.stopService(alarmServiceIntent)
+                stopAlarmService()
+                _uiState.update {
+                    it.copy(
+                        dismissClick = true
+                    )
+                }
             }
         }
+    }
+
+    private fun stopAlarmService() {
+        val alarmServiceIntent = Intent(app, AlarmService::class.java)
+        app.stopService(alarmServiceIntent)
     }
 
 }

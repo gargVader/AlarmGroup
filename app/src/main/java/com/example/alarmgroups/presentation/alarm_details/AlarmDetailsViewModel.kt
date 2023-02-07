@@ -157,6 +157,6 @@ TODO:
         https://stackoverflow.com/questions/69620053/close-full-screen-intent-activity-on-notification-click
 
         - Upon dismiss button click : Keep a mutable state
-        https://stackoverflow.com/questions/49077746/how-to-finish-activity-from-viewmodel-using-androids-architecture-components
+            https://stackoverflow.com/questions/49077746/how-to-finish-activity-from-viewmodel-using-androids-architecture-components
 
  */
