@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:name=".App"
@@ -42,6 +43,14 @@
         <receiver
             android:name=".alarm.receivers.AlarmReceiver"
             android:exported="true" />
+
+        <receiver android:name=".alarm.receivers.RescheduleAlarmReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
         <service android:name=".alarm.AlarmService" />
     </application>
 

@@ -16,7 +16,7 @@ abstract class AlarmModule {
 
     @Binds
     @Singleton
-    abstract fun bindAlarmService(
+    abstract fun bindAlarmHelper(
         alarmServiceImpl: AlarmHelperImpl
     ): AlarmHelper
 
