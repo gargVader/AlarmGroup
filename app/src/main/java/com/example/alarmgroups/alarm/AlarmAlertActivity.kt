@@ -2,10 +2,10 @@ package com.example.alarmgroups.alarm
 
 import android.app.KeyguardManager
 import android.content.Context
+import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import androidx.compose.material.Surface
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -13,21 +13,22 @@ import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.lifecycleScope
+import com.example.alarmgroups.alarm.receivers.AlarmAlertActivityReceiver
 import com.example.alarmgroups.presentation.alarm_alert.AlarmAlertScreen
 import com.example.alarmgroups.presentation.alarm_alert.AlarmAlertViewModel
 import com.example.alarmgroups.ui.theme.AlarmGroupsTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.time.LocalTime
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class AlarmAlertActivity : ComponentActivity() {
 
     private val viewModel: AlarmAlertViewModel by viewModels()
+    val broadcastReceiver = AlarmAlertActivityReceiver()
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,19 +38,20 @@ class AlarmAlertActivity : ComponentActivity() {
 
         val label = intent.getStringExtra(AlarmConstants.EXTRA_LABEL) ?: ""
         val notificationId: Long = intent.getLongExtra(AlarmConstants.EXTRA_NOTIFICATION_ID, -1)
-
+        // Save in savedInstanceState, so that it can be accessed in AlarmAlertViewModel
         savedInstanceState?.putLong(AlarmConstants.EXTRA_NOTIFICATION_ID, notificationId)
 
         val nowLocalTime = LocalTime.now()
 
         lifecycleScope.launch {
             viewModel.uiState.collect {
-                if (it.dismissClick){
+                if (it.dismissClick) {
                     finish()
                 }
             }
         }
 
+        registerAlarmAlertActivityCloseReceiver()
 
         setContent {
             AlarmGroupsTheme {
@@ -66,6 +68,7 @@ class AlarmAlertActivity : ComponentActivity() {
     override fun onDestroy() {
         super.onDestroy()
         turnScreenOffAndKeyguardOn()
+        unregisterAlarmAlertActivityCloseReceiver()
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -98,6 +101,16 @@ class AlarmAlertActivity : ComponentActivity() {
                         or WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON
             )
         }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun registerAlarmAlertActivityCloseReceiver() {
+        val filter = IntentFilter(AlarmConstants.ACTION_ALARM_ALERT_ACTIVITY_CLOSE)
+        registerReceiver(broadcastReceiver, filter, RECEIVER_NOT_EXPORTED)
+    }
+
+    private fun unregisterAlarmAlertActivityCloseReceiver() {
+        unregisterReceiver(broadcastReceiver)
     }
 
 

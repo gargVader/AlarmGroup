@@ -24,6 +24,10 @@ class AlarmReceiver : BroadcastReceiver() {
 
             AlarmConstants.ACTION_ALARM_DISMISSED -> {
                 context.stopService(alarmServiceIntent)
+
+                val alarmAlertActivityCloseIntent =
+                    Intent(AlarmConstants.ACTION_ALARM_ALERT_ACTIVITY_CLOSE)
+                context.sendBroadcast(alarmAlertActivityCloseIntent)
             }
         }
 

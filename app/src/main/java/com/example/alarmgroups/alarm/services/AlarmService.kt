@@ -112,7 +112,7 @@ class AlarmService : Service() {
             )
             .addAction(
                 R.drawable.ic_baseline_close_24,
-                "Turn off",
+                "Dismiss this",
                 alarmDismissPendingIntent
             )
             .build()
