@@ -9,7 +9,6 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -22,17 +21,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.example.alarmgroups.R
 import com.example.alarmgroups.presentation.navigation.Screen
 import com.example.alarmgroups.presentation.utils.SwipeActions
 import com.example.alarmgroups.presentation.utils.SwipeActionsConfig
+import com.example.alarmgroups.ui.theme.grayDark
 import com.example.alarmgroups.ui.theme.orangeLight
 import kotlin.math.absoluteValue
 
@@ -68,39 +69,59 @@ fun HomeScreen(
             }
         }
 
-        Column(modifier = Modifier.padding(top = 16.dp, start = 12.dp, end = 12.dp)) {
+        Column(
+            modifier = Modifier
+                .padding(top = 16.dp, start = 12.dp, end = 12.dp)
+                .fillMaxSize()
+        ) {
             Text(
                 text = "Alarm",
                 style = TextStyle(
                     fontWeight = FontWeight.Normal,
                     fontSize = 22.sp,
                 ),
-                modifier = Modifier.padding(bottom = 8.dp)
+                modifier = Modifier.padding(bottom = 12.dp, start = 8.dp)
             )
-            OutlinedTextField(
-                value = viewModel.state.seconds,
-                onValueChange = {
-                    viewModel.onEvent(
-                        HomeScreenEvents.OnTimeChanged(it)
-                    )
-                },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-            )
-
-            Button(onClick = {
-                viewModel.scheduleAlarmInSeconds(state.seconds.toInt())
-            }) {
-                Text(text = "Set Alarm")
-            }
-
-
-            Button(onClick = {
-                viewModel.deleteAllAlarms()
-            }) {
-                Text(text = "Delete All from db")
-            }
+//            OutlinedTextField(
+//                value = viewModel.state.seconds,
+//                onValueChange = {
+//                    viewModel.onEvent(
+//                        HomeScreenEvents.OnTimeChanged(it)
+//                    )
+//                },
+//                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+//            )
+//
+//            Button(onClick = {
+//                viewModel.scheduleAlarmInSeconds(state.seconds.toInt())
+//            }) {
+//                Text(text = "Set Alarm")
+//            }
+//
+//
+//            Button(onClick = {
+//                viewModel.deleteAllAlarms()
+//            }) {
+//                Text(text = "Delete All from db")
+//            }
             if (state.alarmList.isEmpty()) {
-                Text(text = "No alarms set")
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .offset(y = (-72).dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Icon(
+                        painterResource(id = R.drawable.baseline_add_alarm_24),
+                        contentDescription = null,
+                        tint = grayDark,
+                        modifier = Modifier
+                            .padding(bottom = 4.dp)
+                            .size(96.dp)
+                    )
+                    Text(text = "No alarms here", color = grayDark)
+                }
             } else {
 
                 LazyColumn(modifier = Modifier.fillMaxSize()) {
