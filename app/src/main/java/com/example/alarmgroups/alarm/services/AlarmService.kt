@@ -4,6 +4,7 @@ import android.app.Notification
 import android.app.Service
 import android.content.Intent
 import android.media.MediaPlayer
+import android.media.RingtoneManager
 import android.os.*
 import android.os.Process.THREAD_PRIORITY_BACKGROUND
 import androidx.annotation.RequiresApi
@@ -17,7 +18,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.TimerTask
 import javax.inject.Inject
 
 /**
@@ -31,12 +31,10 @@ class AlarmService : Service() {
 
     private var serviceLooper: Looper? = null
     private var serviceHandler: ServiceHandler? = null
-    private lateinit var vibrationTask : TimerTask
 
     @Inject
     lateinit var repo: AlarmRepository
 
-    @Inject
     lateinit var mediaPlayer: MediaPlayer
 
     @Inject
@@ -67,6 +65,9 @@ class AlarmService : Service() {
 
     override fun onCreate() {
         super.onCreate()
+
+        setupMediaPlayer()
+
         // Create a HandlerThread for the service to run on
         HandlerThread("AlarmServiceThread", THREAD_PRIORITY_BACKGROUND).apply {
             start()
@@ -100,7 +101,7 @@ class AlarmService : Service() {
 
     private fun createNotification(label: String, notificationId: Long): Notification {
         val alarmAlertPendingIntent =
-            createAlarmAlertPendingIntent(applicationContext, label,  notificationId)
+            createAlarmAlertPendingIntent(applicationContext, label, notificationId)
         val alarmDismissPendingIntent =
             createAlarmDismissPendingIntent(applicationContext, pendingIntentId = notificationId)
         return NotificationCompat.Builder(applicationContext, ALARM_NOTIFICATION_CHANNEL_ID)
@@ -125,22 +126,28 @@ class AlarmService : Service() {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun startVibration(){
+    private fun startVibration() {
         val pattern: LongArray = longArrayOf(0, 1000, 500)
         val effect = VibrationEffect.createWaveform(pattern, 0);
         vibrator.vibrate(effect);
     }
 
-    private fun stopVibration(){
+    private fun stopVibration() {
         vibrator.cancel()
     }
 
-    private fun startSound(){
-
+    private fun setupMediaPlayer() {
+        val soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
+        mediaPlayer = MediaPlayer.create(this, soundUri)
+        mediaPlayer.isLooping = true
     }
 
-    private fun stopSound(){
+    private fun startSound() {
+        mediaPlayer.start()
+    }
 
+    private fun stopSound() {
+        mediaPlayer.stop()
     }
 
     companion object {

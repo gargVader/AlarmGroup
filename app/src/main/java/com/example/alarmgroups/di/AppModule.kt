@@ -37,10 +37,6 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideMediaPlayer(): MediaPlayer = MediaPlayer()
-
-    @Provides
-    @Singleton
     fun provideVibrator(app: Application): Vibrator =
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             (app.getSystemService(Service.VIBRATOR_MANAGER_SERVICE) as VibratorManager)

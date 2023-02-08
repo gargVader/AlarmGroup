@@ -7,6 +7,8 @@ import android.os.Build
 import android.util.Log
 import com.example.alarmgroups.alarm.AlarmConstants
 import com.example.alarmgroups.alarm.services.AlarmService
+import java.util.Timer
+import kotlin.concurrent.timerTask
 
 class AlarmReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
@@ -20,14 +22,17 @@ class AlarmReceiver : BroadcastReceiver() {
                 } else {
                     context.startService(alarmServiceIntent)
                 }
+                // Set auto alarm end
+                Timer().schedule(timerTask {
+                    context.stopService(alarmServiceIntent)
+                    sendBroadcastToCloseAlarmAlertActivity(context)
+                }, AlarmConstants.ALARM_DURATION_MILLIS)
+
             }
 
             AlarmConstants.ACTION_ALARM_DISMISSED -> {
                 context.stopService(alarmServiceIntent)
-
-                val alarmAlertActivityCloseIntent =
-                    Intent(AlarmConstants.ACTION_ALARM_ALERT_ACTIVITY_CLOSE)
-                context.sendBroadcast(alarmAlertActivityCloseIntent)
+                sendBroadcastToCloseAlarmAlertActivity(context)
             }
         }
 
@@ -49,5 +54,9 @@ class AlarmReceiver : BroadcastReceiver() {
         }
     }
 
-
+    private fun sendBroadcastToCloseAlarmAlertActivity(context: Context) {
+        val alarmAlertActivityCloseIntent =
+            Intent(AlarmConstants.ACTION_ALARM_ALERT_ACTIVITY_CLOSE)
+        context.sendBroadcast(alarmAlertActivityCloseIntent)
+    }
 }
