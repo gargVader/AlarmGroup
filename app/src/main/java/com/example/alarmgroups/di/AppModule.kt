@@ -5,13 +5,10 @@ import android.app.Application
 import android.app.NotificationManager
 import android.app.Service
 import android.content.Context
-import android.media.MediaPlayer
 import android.os.Build
 import android.os.Vibrator
 import android.os.VibratorManager
 import androidx.annotation.RequiresApi
-import androidx.room.Room
-import com.example.alarmgroups.data.data_source.AlarmDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -44,13 +41,4 @@ object AppModule {
         } else {
             app.getSystemService(Service.VIBRATOR_SERVICE) as Vibrator
         }
-
-    @Provides
-    @Singleton
-    fun provideAlarmDatabase(app: Application): AlarmDatabase {
-        return Room.databaseBuilder(
-            app,
-            AlarmDatabase::class.java, "alarmdb"
-        ).build()
-    }
 }

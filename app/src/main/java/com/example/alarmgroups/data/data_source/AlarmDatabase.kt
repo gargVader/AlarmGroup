@@ -5,21 +5,23 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
 import com.example.alarmgroups.data.model.AlarmEntity
+import com.example.alarmgroups.data.model.GroupEntity
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import java.lang.reflect.ParameterizedType
 
 @Database(
-    entities = [AlarmEntity::class],
+    entities = [AlarmEntity::class, GroupEntity::class],
     version = 1,
 )
-@TypeConverters(Converter::class)
+@TypeConverters(Converters::class)
 abstract class AlarmDatabase : RoomDatabase() {
-    abstract val dao: AlarmDao
+    abstract val alarmDao: AlarmDao
+    abstract val groupDao: GroupDao
 }
 
-class Converter {
+class Converters {
 
     private val moshi = Moshi.Builder().build()
     private val type: ParameterizedType =

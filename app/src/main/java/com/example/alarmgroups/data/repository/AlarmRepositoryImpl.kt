@@ -3,6 +3,7 @@ package com.example.alarmgroups.data.repository
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
+import com.example.alarmgroups.data.data_source.AlarmDao
 import com.example.alarmgroups.data.data_source.AlarmDatabase
 import com.example.alarmgroups.domain.model.Alarm
 import com.example.alarmgroups.domain.repository.AlarmRepository
@@ -13,10 +14,8 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class AlarmRepositoryImpl @Inject constructor(
-    db: AlarmDatabase
+    private val dao: AlarmDao
 ) : AlarmRepository {
-
-    val dao = db.dao
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun getAllAlarms(): Flow<List<Alarm>> {
@@ -45,7 +44,7 @@ class AlarmRepositoryImpl @Inject constructor(
         dao.deleteAllAlarms()
     }
 
-    override suspend fun updateAlarmActive(id: Long, isActive : Boolean){
+    override suspend fun updateAlarmActive(id: Long, isActive: Boolean) {
         dao.updateAlarmActive(id, isActive)
     }
 
