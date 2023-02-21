@@ -5,7 +5,7 @@ import android.content.Context
 import android.os.Build
 import androidx.activity.ComponentActivity
 import androidx.annotation.RequiresApi
-import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -14,9 +14,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -35,9 +32,8 @@ import com.example.alarmgroups.presentation.utils.SwipeActions
 import com.example.alarmgroups.presentation.utils.SwipeActionsConfig
 import com.example.alarmgroups.ui.theme.grayDark
 import com.example.alarmgroups.ui.theme.orangeLight
-import kotlin.math.absoluteValue
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
@@ -133,7 +129,6 @@ fun HomeScreen(
                             alarm.id!!
                         }
                     ) { alarm ->
-
                         SwipeActions(
                             endActionsConfig = SwipeActionsConfig(
                                 threshold = 0.4f,
@@ -146,32 +141,9 @@ fun HomeScreen(
                                 }
                             ),
                         ) { state ->
-                            val animateCorners by remember {
-                                derivedStateOf {
-                                    state.offset.value.absoluteValue > 30
-                                }
-                            }
-                            val startCorners by animateDpAsState(
-                                targetValue = when {
-                                    state.dismissDirection == DismissDirection.StartToEnd &&
-                                            animateCorners -> 8.dp
-                                    else -> 0.dp
-                                }
-                            )
-                            val endCorners by animateDpAsState(
-                                targetValue = when {
-                                    state.dismissDirection == DismissDirection.EndToStart &&
-                                            animateCorners -> 8.dp
-                                    else -> 0.dp
-                                }
-                            )
-                            val elevation by animateDpAsState(
-                                targetValue = when {
-                                    animateCorners -> 6.dp
-                                    else -> 2.dp
-                                }
-                            )
                             AlarmItem(
+                                modifier = Modifier
+                                    .animateItemPlacement(),
                                 alarm = alarm,
                                 onToggleClick = { isActive ->
                                     if (isActive) {
