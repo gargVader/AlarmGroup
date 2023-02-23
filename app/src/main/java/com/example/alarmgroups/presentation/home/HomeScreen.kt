@@ -3,9 +3,11 @@ package com.example.alarmgroups.presentation.home
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -67,17 +69,33 @@ fun HomeScreen(
 
         Column(
             modifier = Modifier
-                .padding(top = 16.dp, start = 12.dp, end = 12.dp)
+                .padding(start = 12.dp, end = 12.dp)
                 .fillMaxSize()
         ) {
-            Text(
-                text = "Alarm",
-                style = TextStyle(
-                    fontWeight = FontWeight.Normal,
-                    fontSize = 22.sp,
-                ),
-                modifier = Modifier.padding(bottom = 12.dp, start = 8.dp)
-            )
+
+            Row(
+                modifier = Modifier
+                    .padding(start = 8.dp)
+                    .height(48.dp)
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Alarm",
+                    style = TextStyle(
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 22.sp,
+                    ),
+                )
+                if (state.isMultiSelectionMode) {
+                    TextButton(onClick = { /*TODO*/ }) {
+                        Icon(Icons.Default.Add, contentDescription = null)
+                        Text(text = "Add to group")
+                    }
+                }
+            }
+
 //            OutlinedTextField(
 //                value = viewModel.state.seconds,
 //                onValueChange = {
@@ -130,6 +148,9 @@ fun HomeScreen(
                         }
                     ) { alarm ->
                         SwipeActions(
+                            modifier = Modifier
+                                .animateItemPlacement(),
+                            showTutorial = true,
                             endActionsConfig = SwipeActionsConfig(
                                 threshold = 0.4f,
                                 background = Color(0xffFF4444),
@@ -140,10 +161,8 @@ fun HomeScreen(
                                     viewModel.deleteAlarm(alarm)
                                 }
                             ),
-                        ) { state ->
+                        ) { swipeActionState ->
                             AlarmItem(
-                                modifier = Modifier
-                                    .animateItemPlacement(),
                                 alarm = alarm,
                                 onToggleClick = { isActive ->
                                     if (isActive) {
@@ -152,18 +171,31 @@ fun HomeScreen(
                                         viewModel.unscheduleAlarm(alarm)
                                     }
                                 },
-                                onDeleteClick = {
-                                    viewModel.deleteAlarm(alarm)
-                                },
-                                onCardClick = {
-                                    navController.navigate(
-                                        Screen.AlarmDetailsScreen.passNavArgs(
-                                            alarmId = alarm.id!!,
-                                            alarmHr = alarm.time.hour,
-                                            alarmMin = alarm.time.minute
+                                onClick = {
+                                    if (state.isMultiSelectionMode) {
+                                        // if already selected then unselect
+                                        if (alarm.isSelected) {
+                                            viewModel.onEvent(HomeScreenEvents.OnAlarmUnSelect(alarm.id!!))
+                                        } else {
+                                            viewModel.onEvent(HomeScreenEvents.OnAlarmSelect(alarm.id!!))
+                                        }
+                                    } else {
+                                        // navigate to item
+                                        navController.navigate(
+                                            Screen.AlarmDetailsScreen.passNavArgs(
+                                                alarmId = alarm.id!!,
+                                                alarmHr = alarm.time.hour,
+                                                alarmMin = alarm.time.minute
+                                            )
                                         )
-                                    )
-                                }
+                                    }
+                                },
+                                onLongClick = {
+                                    Log.d("Girish", "HomeScreen: long click")
+                                    viewModel.onEvent(HomeScreenEvents.OnMultiSelectionMode(true))
+                                    viewModel.onEvent(HomeScreenEvents.OnAlarmSelect(alarm.id!!))
+                                },
+                                isMultiSelectionMode = state.isMultiSelectionMode
                             )
                         }
                     }

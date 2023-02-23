@@ -19,7 +19,6 @@ class AlarmRepositoryImpl @Inject constructor(
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun getAllAlarms(): Flow<List<Alarm>> {
-        Log.d("Girish", "getAllAlarms: RepoImpl")
         return dao.getAllAlarms()
             .map {
                 it.map { alarmEntity -> alarmEntity.toAlarm() }

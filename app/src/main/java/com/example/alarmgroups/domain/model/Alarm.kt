@@ -9,7 +9,8 @@ data class Alarm(
     val time: LocalTime,
     val days: List<Int>? = null,
     val label: String?,
-    val isActive: Boolean = true
+    val isActive: Boolean = true,
+    val isSelected: Boolean = false, // represents whether alarm is selected in the multi-selection mode
 ) {
 
     /*

@@ -31,11 +31,44 @@ class HomeViewModel @Inject constructor(
 
     fun onEvent(event: HomeScreenEvents) {
         when (event) {
-            // HomeScreenEvents
+            // Used for debugging
             is HomeScreenEvents.OnTimeChanged -> {
                 state = state.copy(
                     seconds = event.time
                 )
+            }
+            is HomeScreenEvents.OnMultiSelectionMode -> {
+                state = state.copy(isMultiSelectionMode = event.mode)
+            }
+            is HomeScreenEvents.OnAlarmSelect -> {
+                state = state.copy(
+                    alarmList = state.alarmList.toMutableList().apply {
+                        forEachIndexed { index, alarm ->
+                            if (alarm.id == event.id) {
+                                set(index, alarm.copy(isSelected = true))
+                            }
+                        }
+                    }
+                )
+                // bad practice. Updating state twice in quick succession
+                if (state.selectedAlarmList.isEmpty()) {
+                    state = state.copy(isMultiSelectionMode = false)
+                }
+
+            }
+            is HomeScreenEvents.OnAlarmUnSelect -> {
+                state = state.copy(
+                    alarmList = state.alarmList.toMutableList().apply {
+                        forEachIndexed { index, alarm ->
+                            if (alarm.id == event.id) {
+                                set(index, alarm.copy(isSelected = false))
+                            }
+                        }
+                    }
+                )
+                if (state.selectedAlarmList.isEmpty()) {
+                    state = state.copy(isMultiSelectionMode = false)
+                }
             }
         }
     }
@@ -102,6 +135,4 @@ class HomeViewModel @Inject constructor(
             repo.deleteAllAlarms()
         }
     }
-
-
 }

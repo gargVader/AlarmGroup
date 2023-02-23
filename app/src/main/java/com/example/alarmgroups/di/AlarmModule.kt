@@ -3,7 +3,9 @@ package com.example.alarmgroups.di
 import com.example.alarmgroups.alarm.AlarmHelper
 import com.example.alarmgroups.alarm.AlarmHelperImpl
 import com.example.alarmgroups.data.repository.AlarmRepositoryImpl
+import com.example.alarmgroups.data.repository.GroupRepositoryImpl
 import com.example.alarmgroups.domain.repository.AlarmRepository
+import com.example.alarmgroups.domain.repository.GroupRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -24,6 +26,12 @@ abstract class AlarmModule {
     @Singleton
     abstract fun bindAlarmRepository(
         alarmRepositoryImpl: AlarmRepositoryImpl
-    ) : AlarmRepository
+    ): AlarmRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindGroupRepository(
+        groupRepositoryImpl: GroupRepositoryImpl
+    ): GroupRepository
 
 }

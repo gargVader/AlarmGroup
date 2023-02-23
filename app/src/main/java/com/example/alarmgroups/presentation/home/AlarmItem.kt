@@ -2,14 +2,20 @@ package com.example.alarmgroups.presentation.home
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -17,14 +23,16 @@ import com.example.alarmgroups.alarm.AlarmConstants
 import com.example.alarmgroups.domain.model.Alarm
 import com.example.alarmgroups.ui.theme.*
 
+@OptIn(ExperimentalFoundationApi::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AlarmItem(
     modifier: Modifier = Modifier,
     alarm: Alarm,
-    onDeleteClick: (id: Long) -> Unit,
     onToggleClick: (isActive: Boolean) -> Unit,
-    onCardClick: () -> Unit
+    onClick: () -> Unit,
+    onLongClick: () -> Unit,
+    isMultiSelectionMode: Boolean = false,
 ) {
 
     Card(
@@ -32,10 +40,12 @@ fun AlarmItem(
             .fillMaxWidth()
             .padding(top = 8.dp)
             .clip(RoundedCornerShape(32.dp))
-            .clickable(enabled = true) {
-                onCardClick()
-            },
+            .combinedClickable(
+                onClick = onClick,
+                onLongClick = onLongClick
+            ),
         shape = RoundedCornerShape(32.dp),
+        border = if (alarm.isSelected) BorderStroke(width = 2.dp, color = Color.White) else null,
         backgroundColor = black2
     ) {
         Row(
@@ -63,12 +73,20 @@ fun AlarmItem(
                     )
                 }
             }
-            Switch(
-                checked = alarm.isActive,
-                onCheckedChange = {
-                    onToggleClick(it)
-                },
-            )
+            if (isMultiSelectionMode) {
+                if (alarm.isSelected) {
+                    Icon(Icons.Default.CheckCircle, contentDescription = null)
+                } else {
+//                    Icon(Icons.Default.Circle, contentDescription = null)
+                }
+            } else {
+                Switch(
+                    checked = alarm.isActive,
+                    onCheckedChange = {
+                        onToggleClick(it)
+                    },
+                )
+            }
         }
     }
 }
