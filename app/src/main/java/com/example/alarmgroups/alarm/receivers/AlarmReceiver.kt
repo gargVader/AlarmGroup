@@ -7,7 +7,7 @@ import android.os.Build
 import android.util.Log
 import com.example.alarmgroups.alarm.AlarmConstants
 import com.example.alarmgroups.alarm.services.AlarmService
-import java.util.Timer
+import java.util.*
 import kotlin.concurrent.timerTask
 
 class AlarmReceiver : BroadcastReceiver() {

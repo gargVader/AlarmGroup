@@ -2,7 +2,7 @@ package com.example.alarmgroups.data.data_source
 
 import androidx.room.*
 import com.example.alarmgroups.data.model.GroupEntity
-import com.example.alarmgroups.data.model.relations.GroupWithAlarms
+import com.example.alarmgroups.data.model.relations.GroupWithAlarmsRelation
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -22,5 +22,10 @@ interface GroupDao {
 
     @Transaction
     @Query("SELECT * FROM groupentity WHERE id = :groupId")
-    fun getGroupWithAlarms(groupId: Long): Flow<List<GroupWithAlarms>>
+    fun getGroupWithAlarms(groupId: Long): Flow<List<GroupWithAlarmsRelation>>
+
+    @Transaction
+    @Query("SELECT * FROM groupentity")
+    fun getAllGroupWithAlarms(): Flow<List<GroupWithAlarmsRelation>>
+
 }

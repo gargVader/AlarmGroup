@@ -5,6 +5,7 @@ import com.example.alarmgroups.domain.model.Group
 
 fun GroupEntity.toGroup(): Group {
     return Group(
+        id = id,
         label = label,
         isActive = isActive,
     )
@@ -12,7 +13,7 @@ fun GroupEntity.toGroup(): Group {
 
 fun Group.toGroupEntity(): GroupEntity {
     return GroupEntity(
-        id = null,
+        id = id,
         label = label,
         isActive = isActive,
     )

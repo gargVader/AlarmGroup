@@ -15,7 +15,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.alarmgroups.ui.theme.*
+import com.example.alarmgroups.ui.theme.black1
+import com.example.alarmgroups.ui.theme.black2
+import com.example.alarmgroups.ui.theme.grayDark
+import com.example.alarmgroups.ui.theme.orangeLight
 
 
 @Composable

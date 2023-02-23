@@ -5,7 +5,7 @@ import androidx.room.Relation
 import com.example.alarmgroups.data.model.AlarmEntity
 import com.example.alarmgroups.data.model.GroupEntity
 
-data class GroupWithAlarms(
+data class GroupWithAlarmsRelation(
     @Embedded
     val group: GroupEntity,
     @Relation(

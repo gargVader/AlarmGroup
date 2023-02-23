@@ -26,4 +26,7 @@ sealed class Screen(val route: String) {
                     "?$ALARM_DETAILS_ALARM_MIN=$alarmMin"
         }
     }
+
+    object GroupsScreen : Screen("groups")
+
 }

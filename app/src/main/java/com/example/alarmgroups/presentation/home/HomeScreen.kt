@@ -3,11 +3,9 @@ package com.example.alarmgroups.presentation.home
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -89,8 +87,15 @@ fun HomeScreen(
                     ),
                 )
                 if (state.isMultiSelectionMode) {
-                    TextButton(onClick = { /*TODO*/ }) {
-                        Icon(Icons.Default.Add, contentDescription = null)
+                    TextButton(onClick = {
+                        navController.navigate(
+                            Screen.GroupsScreen.route
+                        )
+                    }) {
+                        Icon(
+                            painterResource(id = R.drawable.baseline_add_box_24),
+                            contentDescription = null
+                        )
                         Text(text = "Add to group")
                     }
                 }
@@ -191,7 +196,6 @@ fun HomeScreen(
                                     }
                                 },
                                 onLongClick = {
-                                    Log.d("Girish", "HomeScreen: long click")
                                     viewModel.onEvent(HomeScreenEvents.OnMultiSelectionMode(true))
                                     viewModel.onEvent(HomeScreenEvents.OnAlarmSelect(alarm.id!!))
                                 },

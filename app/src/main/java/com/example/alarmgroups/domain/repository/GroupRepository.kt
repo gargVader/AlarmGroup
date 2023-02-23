@@ -1,7 +1,7 @@
 package com.example.alarmgroups.domain.repository
 
-import com.example.alarmgroups.data.model.relations.GroupWithAlarms
 import com.example.alarmgroups.domain.model.Group
+import com.example.alarmgroups.domain.model.GroupWithAlarms
 import kotlinx.coroutines.flow.Flow
 
 interface GroupRepository {
@@ -15,5 +15,7 @@ interface GroupRepository {
     suspend fun update(group: Group)
 
     fun getGroupWithAlarms(groupId: Long): Flow<List<GroupWithAlarms>>
+
+    fun getAllGroupWithAlarms(): Flow<List<GroupWithAlarms>>
 
 }
