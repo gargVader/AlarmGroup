@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
@@ -46,6 +47,10 @@ fun HomeScreen(
 ) {
 
     val state = viewModel.state
+
+    BackHandler(enabled = state.isMultiSelectionMode) {
+        viewModel.onEvent(HomeScreenEvents.OnMultiSelectionMode(false))
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         Box(
@@ -101,28 +106,6 @@ fun HomeScreen(
                 }
             }
 
-//            OutlinedTextField(
-//                value = viewModel.state.seconds,
-//                onValueChange = {
-//                    viewModel.onEvent(
-//                        HomeScreenEvents.OnTimeChanged(it)
-//                    )
-//                },
-//                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-//            )
-//
-//            Button(onClick = {
-//                viewModel.scheduleAlarmInSeconds(state.seconds.toInt())
-//            }) {
-//                Text(text = "Set Alarm")
-//            }
-//
-//
-//            Button(onClick = {
-//                viewModel.deleteAllAlarms()
-//            }) {
-//                Text(text = "Delete All from db")
-//            }
             if (state.alarmList.isEmpty()) {
                 Column(
                     modifier = Modifier
@@ -163,7 +146,7 @@ fun HomeScreen(
                                 icon = Icons.Default.Delete,
                                 stayDismissed = true,
                                 onDismiss = {
-                                    viewModel.deleteAlarm(alarm)
+                                    viewModel.onEvent(HomeScreenEvents.OnDeleteAlarm(alarm))
                                 }
                             ),
                         ) { swipeActionState ->
@@ -179,7 +162,7 @@ fun HomeScreen(
                                 onClick = {
                                     if (state.isMultiSelectionMode) {
                                         // if already selected then unselect
-                                        if (alarm.isSelected) {
+                                        if (state.selectedAlarmList.contains(alarm.id)) {
                                             viewModel.onEvent(HomeScreenEvents.OnAlarmUnSelect(alarm.id!!))
                                         } else {
                                             viewModel.onEvent(HomeScreenEvents.OnAlarmSelect(alarm.id!!))
@@ -199,7 +182,8 @@ fun HomeScreen(
                                     viewModel.onEvent(HomeScreenEvents.OnMultiSelectionMode(true))
                                     viewModel.onEvent(HomeScreenEvents.OnAlarmSelect(alarm.id!!))
                                 },
-                                isMultiSelectionMode = state.isMultiSelectionMode
+                                isMultiSelectionMode = state.isMultiSelectionMode,
+                                isSelected = state.selectedAlarmList.contains(alarm.id)
                             )
                         }
                     }

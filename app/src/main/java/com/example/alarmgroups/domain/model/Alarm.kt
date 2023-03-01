@@ -12,7 +12,7 @@ data class Alarm(
     val days: List<Int>? = null,
     val label: String?,
     val isActive: Boolean = true,
-    val isSelected: Boolean = false, // represents whether alarm is selected in the multi-selection mode
+    val groupId: Long? = null,
 ) {
 
     /*

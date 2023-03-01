@@ -8,7 +8,7 @@ Because of this, its members are similar to Alarm. Could have replaced all membe
 But that would have created an added complexity and deviation from existing app pattern. Would have to
 then create a new Alarm object upon every state update.
  */
-data class AlarmDetailsState(
+data class AlarmDetailsScreenState(
     val time: LocalTime = LocalTime.now(),
     val label: String = "",
     val isEditMode: Boolean = false,

@@ -9,6 +9,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
@@ -17,7 +18,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.commandiron.wheel_picker_compose.WheelTimePicker
 import com.commandiron.wheel_picker_compose.core.TimeFormat
+import com.example.alarmgroups.R
 import com.example.alarmgroups.alarm.AlarmConstants
+import com.example.alarmgroups.presentation.common.TextFieldItem
 import com.example.alarmgroups.ui.theme.grayLight
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
@@ -108,9 +111,17 @@ fun AlarmDetailsScreen(
                 onValueChange = {
                     viewModel.onEvent(AlarmDetailsScreenEvents.OnLabelChange(it))
                 },
-                onLabelTextDeleteClick = {
-                    viewModel.onEvent(AlarmDetailsScreenEvents.OnLabelTextDeleteClick)
-                })
+                label = "Label",
+                onDeleteClick = {
+                    viewModel.onEvent(AlarmDetailsScreenEvents.OnLabelChange(""))
+                },
+                leadingIcon = {
+                    Icon(
+                        painterResource(id = R.drawable.label),
+                        contentDescription = null
+                    )
+                }
+            )
         }
     }
 

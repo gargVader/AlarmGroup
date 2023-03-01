@@ -10,6 +10,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Circle
+import androidx.compose.material.icons.outlined.Circle
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,7 +33,8 @@ fun AlarmItem(
     onToggleClick: (isActive: Boolean) -> Unit,
     onClick: () -> Unit,
     onLongClick: () -> Unit,
-    isMultiSelectionMode: Boolean = false,
+    isMultiSelectionMode: Boolean = false, // decides whether or not to show the Switch
+    isSelected: Boolean = false,
 ) {
 
     Card(
@@ -44,7 +47,7 @@ fun AlarmItem(
                 onLongClick = onLongClick
             ),
         shape = RoundedCornerShape(32.dp),
-        border = if (alarm.isSelected) BorderStroke(width = 2.dp, color = Color.White) else null,
+        border = if (isSelected) BorderStroke(width = 2.dp, color = Color.White) else null,
         backgroundColor = black2
     ) {
         Row(
@@ -73,10 +76,10 @@ fun AlarmItem(
                 }
             }
             if (isMultiSelectionMode) {
-                if (alarm.isSelected) {
+                if (isSelected) {
                     Icon(Icons.Default.CheckCircle, contentDescription = null)
                 } else {
-//                    Icon(Icons.Default.Circle, contentDescription = null)
+                    Icon(Icons.Outlined.Circle, contentDescription = null)
                 }
             } else {
                 Switch(

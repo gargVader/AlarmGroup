@@ -26,6 +26,7 @@ class HomeViewModel @Inject constructor(
         private set
 
     init {
+        Log.d("Girish", "HomeViewModel: ")
         getAllAlarms()
     }
 
@@ -37,38 +38,39 @@ class HomeViewModel @Inject constructor(
                     seconds = event.time
                 )
             }
+            is HomeScreenEvents.OnDeleteAlarm -> {
+                // remove from selectedAlarmList if present
+                state = state.copy(
+                    selectedAlarmList = state.selectedAlarmList.toMutableList().apply {
+                        remove(event.alarm.id)
+                    }
+                )
+                deleteAlarm(event.alarm)
+            }
             is HomeScreenEvents.OnMultiSelectionMode -> {
-                state = state.copy(isMultiSelectionMode = event.mode)
+                state = if (event.enabled) {
+                    state.copy(isMultiSelectionMode = true)
+                } else {
+                    state.copy(
+                        isMultiSelectionMode = false, selectedAlarmList = emptyList()
+                    )
+                }
             }
             is HomeScreenEvents.OnAlarmSelect -> {
                 state = state.copy(
-                    alarmList = state.alarmList.toMutableList().apply {
-                        forEachIndexed { index, alarm ->
-                            if (alarm.id == event.id) {
-                                set(index, alarm.copy(isSelected = true))
-                            }
-                        }
+                    selectedAlarmList = state.selectedAlarmList.toMutableList().apply {
+                        add(event.id)
                     }
                 )
-                // bad practice. Updating state twice in quick succession
-                if (state.selectedAlarmList.isEmpty()) {
-                    state = state.copy(isMultiSelectionMode = false)
-                }
-
             }
             is HomeScreenEvents.OnAlarmUnSelect -> {
-                state = state.copy(
-                    alarmList = state.alarmList.toMutableList().apply {
-                        forEachIndexed { index, alarm ->
-                            if (alarm.id == event.id) {
-                                set(index, alarm.copy(isSelected = false))
-                            }
-                        }
-                    }
-                )
-                if (state.selectedAlarmList.isEmpty()) {
-                    state = state.copy(isMultiSelectionMode = false)
+                val newSelectedAlarmList = state.selectedAlarmList.toMutableList().apply {
+                    remove(event.id)
                 }
+                state = state.copy(
+                    selectedAlarmList = newSelectedAlarmList,
+                    isMultiSelectionMode = newSelectedAlarmList.isNotEmpty()
+                )
             }
         }
     }

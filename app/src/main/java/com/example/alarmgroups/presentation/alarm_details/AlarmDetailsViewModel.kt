@@ -32,8 +32,8 @@ class AlarmDetailsViewModel @Inject constructor(
 
     var state by mutableStateOf(
         if (isValidHrAndMin(alarmHr, alarmMin))
-            AlarmDetailsState(LocalTime.of(alarmHr, alarmMin))
-        else AlarmDetailsState()
+            AlarmDetailsScreenState(LocalTime.of(alarmHr, alarmMin))
+        else AlarmDetailsScreenState()
     )
         private set
 
@@ -60,10 +60,6 @@ class AlarmDetailsViewModel @Inject constructor(
         when (event) {
             is AlarmDetailsScreenEvents.OnLabelChange -> {
                 state = state.copy(label = event.label)
-            }
-
-            is AlarmDetailsScreenEvents.OnLabelTextDeleteClick -> {
-                state = state.copy(label = "")
             }
 
             is AlarmDetailsScreenEvents.OnTimeChange -> {

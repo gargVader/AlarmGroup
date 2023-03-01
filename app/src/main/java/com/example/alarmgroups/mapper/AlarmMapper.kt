@@ -15,6 +15,7 @@ fun Alarm.toAlarmEntity(): AlarmEntity {
         days = days,
         label = label,
         isActive = isActive,
+        groupId = groupId,
     )
 }
 
@@ -26,5 +27,6 @@ fun AlarmEntity.toAlarm(): Alarm {
         days = days,
         label = label,
         isActive = isActive,
+        groupId = groupId,
     )
 }
