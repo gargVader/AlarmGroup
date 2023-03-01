@@ -21,10 +21,12 @@ class GroupsViewModel @Inject constructor(
         getAllGroups()
     }
 
-    fun getAllGroups() {
+    private fun getAllGroups() {
         viewModelScope.launch {
             repo.getAllGroupWithAlarms().collect {
-                state = state.copy(groupWithAlarmsList = it)
+                if (!it.isNullOrEmpty()) {
+                    state = state.copy(groupWithAlarmsList = it)
+                }
             }
         }
 
