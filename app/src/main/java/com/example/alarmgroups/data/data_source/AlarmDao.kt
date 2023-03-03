@@ -25,12 +25,23 @@ interface AlarmDao {
     @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun updateAlarm(alarmEntity: AlarmEntity)
 
-    @Query("""
+    @Query(
+        """
         UPDATE alarmentity
         SET isActive = :isActive
         WHERE id = :id
-    """)
-    suspend fun updateAlarmActive(id: Long, isActive : Boolean)
+    """
+    )
+    suspend fun updateAlarmActive(id: Long, isActive: Boolean)
+
+    @Query(
+        """
+        UPDATE alarmentity
+        SET groupId = :groupId
+        WHERE id = :alarmId
+    """
+    )
+    suspend fun updateAlarmWithGroupId(alarmId: Long, groupId: Long)
 
     @Query("DELETE FROM alarmentity WHERE id LIKE :id")
     suspend fun deleteAlarm(id: Long)

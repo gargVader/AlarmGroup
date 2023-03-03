@@ -10,7 +10,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Circle
 import androidx.compose.material.icons.outlined.Circle
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -18,11 +17,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.alarmgroups.alarm.AlarmConstants
 import com.example.alarmgroups.domain.model.Alarm
 import com.example.alarmgroups.ui.theme.*
+import java.time.LocalTime
 
 @OptIn(ExperimentalFoundationApi::class)
 @RequiresApi(Build.VERSION_CODES.O)
@@ -36,6 +37,10 @@ fun AlarmItem(
     isMultiSelectionMode: Boolean = false, // decides whether or not to show the Switch
     isSelected: Boolean = false,
 ) {
+
+    val hrString = alarm.time.hour.toString().padStart(2, '0')
+    val minString = alarm.time.minute.toString().padStart(2, '0')
+
 
     Card(
         modifier = modifier
@@ -62,7 +67,7 @@ fun AlarmItem(
                     )
                 }
                 Text(
-                    text = "${alarm.time.hour}:${alarm.time.minute}",
+                    text = "$hrString:$minString",
                     fontSize = 46.sp,
                     fontWeight = if (alarm.isActive) FontWeight.SemiBold else FontWeight.Normal,
                     color = if (alarm.isActive) grayLight else grayDark
@@ -102,4 +107,19 @@ fun getRepeatDaysDisplay(days: List<Int>): String {
             "${AlarmConstants.DAYS[day]}, "
     }
     return daysDisplay
+}
+
+@Preview
+@Composable
+fun PreviewAlarmItem() {
+    AlarmItem(
+        alarm = Alarm(
+            time = LocalTime.now(),
+            days = listOf(1, 2, 3),
+            label = "Wake up"
+        ),
+        onToggleClick = {},
+        onClick = { /*TODO*/ },
+        onLongClick = { /*TODO*/ }
+    )
 }

@@ -50,12 +50,29 @@ class GroupsViewModel @Inject constructor(
         }
     }
 
-    private fun createNewGroup(group: Group) {
+    fun createNewGroup(
+        group: Group = Group(label = state.newGroupName),
+        selectedAlarmList: List<Long>
+    ) {
         viewModelScope.launch {
             // Create group
             val groupId = groupRepository.insert(group)
             // Update all alarms with the given alarm ids with this new groupId
-            // TODO :
+            selectedAlarmList.forEach { alarmId ->
+                alarmRepository.updateAlarmWithGroupId(alarmId, groupId)
+            }
+        }
+    }
+
+    fun addAlarmsToExistingGroup(
+        groupId: Long,
+        selectedAlarmList: List<Long>
+    ) {
+        viewModelScope.launch {
+            // Update all alarms with the given alarm ids with this new groupId
+            selectedAlarmList.forEach { alarmId ->
+                alarmRepository.updateAlarmWithGroupId(alarmId, groupId)
+            }
         }
     }
 

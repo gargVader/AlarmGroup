@@ -86,7 +86,7 @@ fun RootGraph(navController: NavHostController) {
                 )
             }
         ) {
-            GroupsScreen()
+            GroupsScreen(navController = navController)
         }
     }
 
