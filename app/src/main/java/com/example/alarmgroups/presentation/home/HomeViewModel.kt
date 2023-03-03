@@ -49,6 +49,7 @@ class HomeViewModel @Inject constructor(
             }
             is HomeScreenEvents.OnMultiSelectionMode -> {
                 state = if (event.enabled) {
+                    // clears selectedList before the start of every multiSelection session
                     state.copy(isMultiSelectionMode = true)
                 } else {
                     state.copy(

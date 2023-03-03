@@ -2,6 +2,7 @@ package com.example.alarmgroups.presentation.groups
 
 import android.content.Context
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -23,6 +24,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.example.alarmgroups.presentation.home.HomeScreenEvents
 import com.example.alarmgroups.presentation.home.HomeViewModel
 import kotlinx.coroutines.delay
 
@@ -40,6 +42,10 @@ fun GroupsScreen(
     val groupsState = groupsViewModel.state
     val focusRequester = remember { FocusRequester() }
     val keyboard = LocalSoftwareKeyboardController.current
+
+    BackHandler(enabled = !groupsState.showNewGroupDialog) {
+        goBackToHomeScreen(homeViewModel, navController)
+    }
 
     Column(
         modifier = Modifier
@@ -78,7 +84,7 @@ fun GroupsScreen(
                         GroupsScreenEvents.ShowNewGroupDialog(false)
                     )
                     // Show toast
-                    navController.popBackStack()
+                    goBackToHomeScreen(homeViewModel, navController)
                 },
             )
         }
@@ -104,12 +110,16 @@ fun GroupsScreen(
                         groupId,
                         homeViewModel.state.selectedAlarmList
                     )
-                    navController.popBackStack()
+                    goBackToHomeScreen(homeViewModel, navController)
                 }
             }
         }
     }
+}
 
+fun goBackToHomeScreen(homeViewModel: HomeViewModel, navController: NavHostController) {
+    homeViewModel.onEvent(HomeScreenEvents.OnMultiSelectionMode(false))
+    navController.popBackStack()
 }
 
 
