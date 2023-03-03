@@ -9,4 +9,4 @@ data class GroupEntity(
     val id: Long? = null,
     val label: String = "",
     val isActive: Boolean = true,
-    )
+)

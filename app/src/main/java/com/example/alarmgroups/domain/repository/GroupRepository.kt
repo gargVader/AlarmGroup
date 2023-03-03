@@ -10,7 +10,7 @@ interface GroupRepository {
 
     suspend fun getGroup(id: Long): Group?
 
-    suspend fun insert(group: Group) : Long
+    suspend fun insert(group: Group): Long
 
     suspend fun update(group: Group)
 

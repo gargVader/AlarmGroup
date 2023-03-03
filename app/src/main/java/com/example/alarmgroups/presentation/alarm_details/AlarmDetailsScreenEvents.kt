@@ -7,5 +7,5 @@ sealed interface AlarmDetailsScreenEvents {
     data class OnTimeChange(val time: LocalTime) : AlarmDetailsScreenEvents
     object OnCloseClick : AlarmDetailsScreenEvents
     object OnSaveClick : AlarmDetailsScreenEvents
-    data class OnDayToggleClick(val day : Int) : AlarmDetailsScreenEvents
+    data class OnDayToggleClick(val day: Int) : AlarmDetailsScreenEvents
 }

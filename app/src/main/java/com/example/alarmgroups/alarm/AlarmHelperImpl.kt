@@ -31,7 +31,13 @@ class AlarmHelperImpl @Inject constructor(
         // Remove any alarms with a matching Intent
         alarm.days?.let {
             it.forEach { dayOfWeek ->
-                alarmManager.cancel(createAlarmReceiverPendingIntentForUnSchedule(app, alarm, dayOfWeek))
+                alarmManager.cancel(
+                    createAlarmReceiverPendingIntentForUnSchedule(
+                        app,
+                        alarm,
+                        dayOfWeek
+                    )
+                )
             }
         } ?: alarmManager.cancel(createAlarmReceiverPendingIntentForUnSchedule(app, alarm))
     }

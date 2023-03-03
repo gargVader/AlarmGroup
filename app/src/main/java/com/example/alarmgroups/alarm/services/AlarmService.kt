@@ -128,8 +128,8 @@ class AlarmService : Service() {
     @RequiresApi(Build.VERSION_CODES.O)
     private fun startVibration() {
         val pattern: LongArray = longArrayOf(0, 1000, 500)
-        val effect = VibrationEffect.createWaveform(pattern, 0);
-        vibrator.vibrate(effect);
+        val effect = VibrationEffect.createWaveform(pattern, 0)
+        vibrator.vibrate(effect)
     }
 
     private fun stopVibration() {

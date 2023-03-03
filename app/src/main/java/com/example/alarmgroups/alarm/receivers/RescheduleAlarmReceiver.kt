@@ -30,9 +30,9 @@ class RescheduleAlarmReceiver : BroadcastReceiver() {
 
     private fun rescheduleAlarms() {
         CoroutineScope(Dispatchers.IO).launch {
-            repo.getAllAlarms().collect{
+            repo.getAllAlarms().collect {
                 it.forEach {
-                    if (it.isActive){
+                    if (it.isActive) {
                         alarmHelper.scheduleAlarm(it)
                     }
                 }

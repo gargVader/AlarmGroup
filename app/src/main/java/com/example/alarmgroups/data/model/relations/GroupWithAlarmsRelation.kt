@@ -12,5 +12,5 @@ data class GroupWithAlarmsRelation(
         parentColumn = "id",
         entityColumn = "groupId"
     )
-    val alarms : List<AlarmEntity>
+    val alarms: List<AlarmEntity>
 )

@@ -73,7 +73,7 @@ class AlarmDetailsViewModel @Inject constructor(
                     updateAlarm(
                         Alarm(
                             id = alarmId,
-                            time = state.time!!,
+                            time = state.time,
                             label = state.label,
                             days = state.days
                         )
@@ -81,7 +81,7 @@ class AlarmDetailsViewModel @Inject constructor(
                 } else {
                     createNewAlarm(
                         Alarm(
-                            time = state.time!!,
+                            time = state.time,
                             label = state.label,
                             days = state.days
                         )
@@ -125,7 +125,7 @@ class AlarmDetailsViewModel @Inject constructor(
     fun getRepeatDaysDisplay(): String {
         var daysDisplay: String = ""
         state.days?.forEachIndexed { idx, day ->
-            daysDisplay += if (idx==(state.days!!.size - 1))
+            daysDisplay += if (idx == (state.days!!.size - 1))
                 AlarmConstants.DAYS[day]
             else
                 "${AlarmConstants.DAYS[day]}, "

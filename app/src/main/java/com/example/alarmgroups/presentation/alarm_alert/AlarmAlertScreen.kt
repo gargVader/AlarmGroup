@@ -38,8 +38,8 @@ fun AlarmAlertScreen(
             fontSize = 24.sp
         )
 
-        Row() {
-            Button(onClick = { viewModel.onEvent(AlarmAlertScreenEvents.OnDismissCurrentClick)}) {
+        Row {
+            Button(onClick = { viewModel.onEvent(AlarmAlertScreenEvents.OnDismissCurrentClick) }) {
                 Text(text = "Dismiss Current")
             }
         }

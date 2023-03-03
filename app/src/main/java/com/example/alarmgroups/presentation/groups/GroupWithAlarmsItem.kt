@@ -51,7 +51,7 @@ fun GroupWithAlarmsItem(
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
             )
-            Text(text = "${alarmList.size} alarms", color= grayLight)
+            Text(text = "${alarmList.size} alarms", color = grayLight)
 
             /*
             alarmList.forEach { alarm ->
