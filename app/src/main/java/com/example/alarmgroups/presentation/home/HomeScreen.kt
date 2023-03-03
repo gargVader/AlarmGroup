@@ -6,6 +6,12 @@ import android.os.Build
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -34,7 +40,10 @@ import com.example.alarmgroups.presentation.utils.SwipeActionsConfig
 import com.example.alarmgroups.ui.theme.grayDark
 import com.example.alarmgroups.ui.theme.orangeLight
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
+@OptIn(
+    ExperimentalMaterialApi::class, ExperimentalFoundationApi::class,
+    ExperimentalAnimationApi::class
+)
 @RequiresApi(Build.VERSION_CODES.O)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
@@ -59,14 +68,20 @@ fun HomeScreen(
                 .zIndex(2f)
                 .padding(bottom = 34.dp)
         ) {
-            FloatingActionButton(
-                onClick = {
-                    navController.navigate(Screen.AlarmDetailsScreen.route)
-                },
-                modifier = Modifier.size(96.dp),
-                backgroundColor = orangeLight
+            AnimatedVisibility(
+                !state.isMultiSelectionMode,
+                enter = scaleIn(animationSpec = spring(stiffness = Spring.StiffnessLow)),
+                exit = scaleOut(animationSpec = spring(stiffness = Spring.StiffnessLow))
             ) {
-                Icon(imageVector = Icons.Filled.Add, contentDescription = null)
+                FloatingActionButton(
+                    onClick = {
+                        navController.navigate(Screen.AlarmDetailsScreen.route)
+                    },
+                    modifier = Modifier.size(96.dp),
+                    backgroundColor = orangeLight
+                ) {
+                    Icon(imageVector = Icons.Filled.Add, contentDescription = null)
+                }
             }
         }
 
