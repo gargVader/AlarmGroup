@@ -4,6 +4,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -36,12 +37,8 @@ fun AlarmItem(
     onLongClick: () -> Unit,
     isMultiSelectionMode: Boolean = false, // decides whether or not to show the Switch
     isSelected: Boolean = false,
+    backgroundColor : Color= black2
 ) {
-
-    val hrString = alarm.time.hour.toString().padStart(2, '0')
-    val minString = alarm.time.minute.toString().padStart(2, '0')
-
-
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -53,10 +50,14 @@ fun AlarmItem(
             ),
         shape = RoundedCornerShape(32.dp),
         border = if (isSelected) BorderStroke(width = 2.dp, color = Color.White) else null,
-        backgroundColor = black2
+        backgroundColor = backgroundColor
     ) {
         Row(
-            modifier = Modifier.padding(horizontal = 18.dp, vertical = 16.dp),
+            modifier = Modifier
+                .padding(
+                    horizontal = 18.dp,
+                    vertical = 16.dp
+                ),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(modifier = Modifier.weight(1f)) {
@@ -67,7 +68,7 @@ fun AlarmItem(
                     )
                 }
                 Text(
-                    text = "$hrString:$minString",
+                    text = "${alarm.HrString}:${alarm.MinString}",
                     fontSize = 46.sp,
                     fontWeight = if (alarm.isActive) FontWeight.SemiBold else FontWeight.Normal,
                     color = if (alarm.isActive) grayLight else grayDark

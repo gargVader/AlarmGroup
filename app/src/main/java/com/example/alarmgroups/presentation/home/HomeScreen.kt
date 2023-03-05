@@ -7,17 +7,22 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.ExpandCircleDown
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -29,6 +34,9 @@ import com.example.alarmgroups.presentation.common.HomeScreenTopBar
 import com.example.alarmgroups.presentation.navigation.Screen
 import com.example.alarmgroups.presentation.utils.SwipeActions
 import com.example.alarmgroups.presentation.utils.SwipeActionsConfig
+import com.example.alarmgroups.ui.theme.black2
+import com.example.alarmgroups.ui.theme.grayDark
+import com.example.alarmgroups.ui.theme.grayLight
 
 @OptIn(
     ExperimentalMaterialApi::class, ExperimentalFoundationApi::class,
@@ -90,7 +98,11 @@ fun HomeScreen(
 
                         when (alarmData) {
                             is GroupWithAlarms -> {
-
+                                GroupItem(
+                                    groupWithAlarms = alarmData,
+                                    onToggleClick = {},
+                                    onClick = { /*TODO*/ },
+                                    onLongClick = { /*TODO*/ })
                             }
                             is Alarm -> {
                                 SwipeActions(

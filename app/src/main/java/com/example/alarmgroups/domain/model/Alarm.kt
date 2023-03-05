@@ -58,4 +58,13 @@ data class Alarm(
         return getAlarmFirstTrigger(dayOfWeek).atZone(ZoneId.systemDefault())
             .toEpochSecond() * 1000
     }
+
+    val HrString: String
+        get() = time.hour.toString().padStart(2, '0')
+
+    val MinString: String
+        get() = time.minute.toString().padStart(2, '0')
+
+
+
 }
