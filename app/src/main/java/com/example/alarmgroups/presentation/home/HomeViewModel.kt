@@ -1,6 +1,5 @@
 package com.example.alarmgroups.presentation.home
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -102,7 +101,6 @@ class HomeViewModel @Inject constructor(
     }
 
     fun deleteAlarm(alarm: Alarm) {
-        Log.d("Girish", "deleteAlarm: $alarm")
         alarmHelper.unscheduleAlarm(alarm)
         viewModelScope.launch {
             alarmRepo.deleteAlarm(alarm.id!!)
@@ -126,6 +124,16 @@ class HomeViewModel @Inject constructor(
             groupRepo.updateGroupIsActive(groupWithAlarms.group.id!!, false)
         }
     }
+
+    fun deleteGroup(groupWithAlarms: GroupWithAlarms) {
+        groupWithAlarms.alarms.forEach {
+            alarmHelper.unscheduleAlarm(it)
+        }
+        viewModelScope.launch {
+            groupRepo.deleteGroup(groupWithAlarms.group.id!!)
+        }
+    }
+
 
     /*
     fun deleteAllAlarms() {

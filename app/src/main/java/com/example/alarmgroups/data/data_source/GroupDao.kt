@@ -27,7 +27,7 @@ interface GroupDao {
         WHERE id = :groupId
     """
     )
-    suspend fun updateGroupIsActive(groupId: Long, isActive : Boolean)
+    suspend fun updateGroupIsActive(groupId: Long, isActive: Boolean)
 
     @Transaction
     @Query("SELECT * FROM groupentity WHERE id = :groupId")
@@ -36,5 +36,12 @@ interface GroupDao {
     @Transaction
     @Query("SELECT * FROM groupentity")
     fun getAllGroupWithAlarms(): Flow<List<GroupWithAlarmsRelation>>
+
+    @Query("DELETE FROM groupentity WHERE id LIKE :groupId")
+    suspend fun deleteGroup(groupId: Long)
+
+    @Query("DELETE FROM groupentity")
+    suspend fun deleteAllGroups()
+
 
 }

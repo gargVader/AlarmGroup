@@ -61,12 +61,14 @@ val DefaultSwipeActionsConfig = SwipeActionsConfig(
 )
 @Composable
 fun SwipeActions(
+    enabled : Boolean = true,
     modifier: Modifier = Modifier,
     startActionsConfig: SwipeActionsConfig = DefaultSwipeActionsConfig,
     endActionsConfig: SwipeActionsConfig = DefaultSwipeActionsConfig,
     showTutorial: Boolean = false,
     content: @Composable (DismissState) -> Unit,
 ) = BoxWithConstraints(modifier) {
+
     val width = constraints.maxWidth.toFloat()
     val height = constraints.maxHeight.toFloat()
 
@@ -137,6 +139,11 @@ fun SwipeActions(
                 if (endActionsConfig != DefaultSwipeActionsConfig) add(DismissDirection.EndToStart)
             }
         }
+    }
+
+    if(!enabled){
+        content(state)
+        return@BoxWithConstraints
     }
 
     SwipeToDismiss(

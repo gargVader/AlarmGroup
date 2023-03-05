@@ -29,10 +29,6 @@ fun GroupItem(
     modifier: Modifier = Modifier,
     groupWithAlarms: GroupWithAlarms,
     onToggleClick: (isActive: Boolean) -> Unit,
-    onClick: () -> Unit,
-    onLongClick: () -> Unit,
-    isMultiSelectionMode: Boolean = false, // decides whether or not to show the Switch
-    isSelected: Boolean = false,
 ) {
 
     val group = groupWithAlarms.group
@@ -52,7 +48,7 @@ fun GroupItem(
             .padding(top = 8.dp)
             .clip(RoundedCornerShape(32.dp))
             .combinedClickable(
-                onClick = { },
+                onClick = {  },
                 onLongClick = { }
             ),
         shape = RoundedCornerShape(32.dp),

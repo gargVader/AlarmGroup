@@ -53,4 +53,8 @@ class GroupRepositoryImpl @Inject constructor(
             }
         }
     }
+
+    override suspend fun deleteGroup(groupId: Long) {
+        dao.deleteGroup(groupId)
+    }
 }

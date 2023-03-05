@@ -90,17 +90,34 @@ fun HomeScreen(
 
                         when (alarmData) {
                             is GroupWithAlarms -> {
-                                GroupItem(
-                                    groupWithAlarms = alarmData,
-                                    onToggleClick = { isActive ->
-                                        if (isActive) {
-                                            viewModel.scheduleGroup(alarmData)
-                                        } else {
-                                            viewModel.unscheduleGroup(alarmData)
+
+                                SwipeActions(
+                                    modifier = Modifier
+                                        .animateItemPlacement(),
+                                    showTutorial = true,
+                                    endActionsConfig = SwipeActionsConfig(
+                                        threshold = 0.4f,
+                                        background = Color(0xffFF4444),
+                                        iconTint = Color.Black,
+                                        icon = Icons.Default.Delete,
+                                        stayDismissed = true,
+                                        onDismiss = {
+                                            viewModel.deleteGroup(alarmData)
                                         }
-                                    },
-                                    onClick = { /*TODO*/ },
-                                    onLongClick = { /*TODO*/ })
+                                    ),
+                                ) {
+
+                                    GroupItem(
+                                        groupWithAlarms = alarmData,
+                                        onToggleClick = { isActive ->
+                                            if (isActive) {
+                                                viewModel.scheduleGroup(alarmData)
+                                            } else {
+                                                viewModel.unscheduleGroup(alarmData)
+                                            }
+                                        },
+                                    )
+                                }
                             }
                             is Alarm -> {
                                 SwipeActions(

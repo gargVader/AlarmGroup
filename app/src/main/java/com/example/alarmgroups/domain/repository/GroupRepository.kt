@@ -20,4 +20,6 @@ interface GroupRepository {
 
     fun getAllGroupWithAlarms(): Flow<List<GroupWithAlarms>>
 
+    suspend fun deleteGroup(groupId: Long)
+
 }
