@@ -10,6 +10,9 @@ interface AlarmDao {
     @Query("SELECT * FROM alarmentity")
     fun getAllAlarms(): Flow<List<AlarmEntity>>
 
+    @Query("SELECT * FROM alarmentity WHERE groupId IS NULL")
+    fun getAllAlarmsWithoutGroup(): Flow<List<AlarmEntity>>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAlarm(alarmEntity: AlarmEntity): Long
 

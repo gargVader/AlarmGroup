@@ -10,8 +10,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.alarmgroups.alarm.AlarmHelper
 import com.example.alarmgroups.domain.model.Alarm
+import com.example.alarmgroups.domain.model.GroupWithAlarms
 import com.example.alarmgroups.domain.repository.AlarmRepository
+import com.example.alarmgroups.domain.repository.GroupRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import java.time.LocalTime
 import javax.inject.Inject
@@ -19,15 +22,15 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val alarmHelper: AlarmHelper,
-    private val repo: AlarmRepository
+    private val alarmRepo: AlarmRepository,
+    private val groupRepo: GroupRepository
 ) : ViewModel() {
 
     var state by mutableStateOf(HomeState())
         private set
 
     init {
-        Log.d("Girish", "HomeViewModel: ")
-        getAllAlarms()
+        getAllAlarmData()
     }
 
     fun onEvent(event: HomeScreenEvents) {
@@ -76,14 +79,17 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun getAllAlarms() {
+    private fun getAllAlarmData() {
         viewModelScope.launch {
-            repo.getAllAlarms().collect { alarms ->
-                Log.d("Girish", "getAllAlarms: ViewModel $alarms")
-                state = state.copy(alarmList = alarms)
-            }
+            alarmRepo.getAllAlarmsWithoutGroup()
+                .combine(groupRepo.getAllGroupWithAlarms()) { alarmsWithoutGroup: List<Alarm>, groupWithAlarms: List<GroupWithAlarms> ->
+                    groupWithAlarms + alarmsWithoutGroup
+                }.collect {
+                    state = state.copy(alarmDataList = it)
+                }
         }
     }
+
 
     // test func
     @RequiresApi(Build.VERSION_CODES.O)
@@ -99,7 +105,7 @@ class HomeViewModel @Inject constructor(
     private fun createNewAlarm(alarm: Alarm) {
         viewModelScope.launch {
             // Insert in db
-            val rowId = repo.insertAlarm(alarm)
+            val rowId = alarmRepo.insertAlarm(alarm)
             // Then use rowId to schedule alarm
             alarmHelper.scheduleAlarm(alarm.copy(id = rowId))
         }
@@ -109,7 +115,7 @@ class HomeViewModel @Inject constructor(
         Log.d("Girish", "scheduleAlarm: ${alarm.time.hour}:${alarm.time.minute}")
         alarmHelper.scheduleAlarm(alarm)
         viewModelScope.launch {
-            repo.updateAlarmActive(alarm.id!!, true)
+            alarmRepo.updateAlarmActive(alarm.id!!, true)
         }
     }
 
@@ -117,7 +123,7 @@ class HomeViewModel @Inject constructor(
         Log.d("Girish", "unscheduleAlarm: ${alarm.time.hour}:${alarm.time.minute}")
         alarmHelper.unscheduleAlarm(alarm)
         viewModelScope.launch {
-            repo.updateAlarmActive(alarm.id!!, false)
+            alarmRepo.updateAlarmActive(alarm.id!!, false)
         }
     }
 
@@ -125,17 +131,19 @@ class HomeViewModel @Inject constructor(
         Log.d("Girish", "deleteAlarm: $alarm")
         alarmHelper.unscheduleAlarm(alarm)
         viewModelScope.launch {
-            repo.deleteAlarm(alarm.id!!)
+            alarmRepo.deleteAlarm(alarm.id!!)
         }
     }
 
+    /*
     fun deleteAllAlarms() {
         // unschedule all alarms
-        state.alarmList.forEach {
+        state.alarmDataList.forEach {
             alarmHelper.unscheduleAlarm(it)
         }
         viewModelScope.launch {
-            repo.deleteAllAlarms()
+            alarmRepo.deleteAllAlarms()
         }
     }
+     */
 }

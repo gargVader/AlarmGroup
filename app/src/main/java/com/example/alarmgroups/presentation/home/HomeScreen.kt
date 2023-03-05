@@ -6,43 +6,32 @@ import android.os.Build
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.spring
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.example.alarmgroups.R
+import com.example.alarmgroups.domain.model.Alarm
+import com.example.alarmgroups.domain.model.GroupWithAlarms
+import com.example.alarmgroups.presentation.common.AddAlarmFloatingActionButton
+import com.example.alarmgroups.presentation.common.EmptyAlarmDataList
+import com.example.alarmgroups.presentation.common.HomeScreenTopBar
 import com.example.alarmgroups.presentation.navigation.Screen
 import com.example.alarmgroups.presentation.utils.SwipeActions
 import com.example.alarmgroups.presentation.utils.SwipeActionsConfig
-import com.example.alarmgroups.ui.theme.grayDark
-import com.example.alarmgroups.ui.theme.orangeLight
 
 @OptIn(
     ExperimentalMaterialApi::class, ExperimentalFoundationApi::class,
-    ExperimentalAnimationApi::class
 )
 @RequiresApi(Build.VERSION_CODES.O)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
@@ -62,27 +51,12 @@ fun HomeScreen(
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        Box(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .zIndex(2f)
-                .padding(bottom = 34.dp)
+
+        AddAlarmFloatingActionButton(
+            modifier = Modifier.align(Alignment.BottomCenter),
+            isVisible = !state.isMultiSelectionMode
         ) {
-            AnimatedVisibility(
-                !state.isMultiSelectionMode,
-                enter = scaleIn(animationSpec = spring(stiffness = Spring.StiffnessLow)),
-                exit = scaleOut(animationSpec = spring(stiffness = Spring.StiffnessLow))
-            ) {
-                FloatingActionButton(
-                    onClick = {
-                        navController.navigate(Screen.AlarmDetailsScreen.route)
-                    },
-                    modifier = Modifier.size(96.dp),
-                    backgroundColor = orangeLight
-                ) {
-                    Icon(imageVector = Icons.Filled.Add, contentDescription = null)
-                }
-            }
+            navController.navigate(Screen.AlarmDetailsScreen.route)
         }
 
         Column(
@@ -91,115 +65,106 @@ fun HomeScreen(
                 .fillMaxSize()
         ) {
 
-            Row(
-                modifier = Modifier
-                    .padding(start = 8.dp)
-                    .height(48.dp)
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "Alarm",
-                    style = TextStyle(
-                        fontWeight = FontWeight.Normal,
-                        fontSize = 22.sp,
-                    ),
+            HomeScreenTopBar(isMultiSelectionMode = state.isMultiSelectionMode) {
+                navController.navigate(
+                    Screen.GroupsScreen.route
                 )
-                if (state.isMultiSelectionMode) {
-                    TextButton(onClick = {
-                        navController.navigate(
-                            Screen.GroupsScreen.route
-                        )
-                    }) {
-                        Icon(
-                            painterResource(id = R.drawable.baseline_add_box_24),
-                            contentDescription = null
-                        )
-                        Text(text = "Add to group")
-                    }
-                }
             }
 
-            if (state.alarmList.isEmpty()) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .offset(y = (-72).dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Icon(
-                        painterResource(id = R.drawable.baseline_add_alarm_24),
-                        contentDescription = null,
-                        tint = grayDark,
-                        modifier = Modifier
-                            .padding(bottom = 4.dp)
-                            .size(96.dp)
-                    )
-                    Text(text = "No alarms here", color = grayDark)
-                }
+            if (state.alarmDataList.isEmpty()) {
+                EmptyAlarmDataList()
             } else {
 
                 LazyColumn(modifier = Modifier.fillMaxSize()) {
-
                     items(
-                        items = state.alarmList,
-                        key = { alarm ->
+                        items = state.alarmDataList,
+                        key = { alarmData ->
                             // Return a stable + unique key for the item
-                            alarm.id!!
+                            when (alarmData) {
+                                is Alarm -> alarmData.id!!
+                                is GroupWithAlarms -> alarmData.group.id!!
+                                else -> {}
+                            }
                         }
-                    ) { alarm ->
-                        SwipeActions(
-                            modifier = Modifier
-                                .animateItemPlacement(),
-                            showTutorial = true,
-                            endActionsConfig = SwipeActionsConfig(
-                                threshold = 0.4f,
-                                background = Color(0xffFF4444),
-                                iconTint = Color.Black,
-                                icon = Icons.Default.Delete,
-                                stayDismissed = true,
-                                onDismiss = {
-                                    viewModel.onEvent(HomeScreenEvents.OnDeleteAlarm(alarm))
-                                }
-                            ),
-                        ) { swipeActionState ->
-                            AlarmItem(
-                                alarm = alarm,
-                                onToggleClick = { isActive ->
-                                    if (isActive) {
-                                        viewModel.scheduleAlarm(alarm)
-                                    } else {
-                                        viewModel.unscheduleAlarm(alarm)
-                                    }
-                                },
-                                onClick = {
-                                    if (state.isMultiSelectionMode) {
-                                        // if already selected then unselect
-                                        if (state.selectedAlarmList.contains(alarm.id)) {
-                                            viewModel.onEvent(HomeScreenEvents.OnAlarmUnSelect(alarm.id!!))
-                                        } else {
-                                            viewModel.onEvent(HomeScreenEvents.OnAlarmSelect(alarm.id!!))
-                                        }
-                                    } else {
-                                        // navigate to item
-                                        navController.navigate(
-                                            Screen.AlarmDetailsScreen.passNavArgs(
-                                                alarmId = alarm.id!!,
-                                                alarmHr = alarm.time.hour,
-                                                alarmMin = alarm.time.minute
+                    ) { alarmData ->
+
+                        when (alarmData) {
+                            is GroupWithAlarms -> {
+
+                            }
+                            is Alarm -> {
+                                SwipeActions(
+                                    modifier = Modifier
+                                        .animateItemPlacement(),
+                                    showTutorial = true,
+                                    endActionsConfig = SwipeActionsConfig(
+                                        threshold = 0.4f,
+                                        background = Color(0xffFF4444),
+                                        iconTint = Color.Black,
+                                        icon = Icons.Default.Delete,
+                                        stayDismissed = true,
+                                        onDismiss = {
+                                            viewModel.onEvent(
+                                                HomeScreenEvents.OnDeleteAlarm(
+                                                    alarmData
+                                                )
                                             )
-                                        )
-                                    }
-                                },
-                                onLongClick = {
-                                    viewModel.onEvent(HomeScreenEvents.OnMultiSelectionMode(true))
-                                    viewModel.onEvent(HomeScreenEvents.OnAlarmSelect(alarm.id!!))
-                                },
-                                isMultiSelectionMode = state.isMultiSelectionMode,
-                                isSelected = state.selectedAlarmList.contains(alarm.id)
-                            )
+                                        }
+                                    ),
+                                ) { swipeActionState ->
+                                    AlarmItem(
+                                        alarm = alarmData,
+                                        onToggleClick = { isActive ->
+                                            if (isActive) {
+                                                viewModel.scheduleAlarm(alarmData)
+                                            } else {
+                                                viewModel.unscheduleAlarm(alarmData)
+                                            }
+                                        },
+                                        onClick = {
+                                            if (state.isMultiSelectionMode) {
+                                                // if already selected then unselect
+                                                if (state.selectedAlarmList.contains(alarmData.id)) {
+                                                    viewModel.onEvent(
+                                                        HomeScreenEvents.OnAlarmUnSelect(
+                                                            alarmData.id!!
+                                                        )
+                                                    )
+                                                } else {
+                                                    viewModel.onEvent(
+                                                        HomeScreenEvents.OnAlarmSelect(
+                                                            alarmData.id!!
+                                                        )
+                                                    )
+                                                }
+                                            } else {
+                                                // navigate to item
+                                                navController.navigate(
+                                                    Screen.AlarmDetailsScreen.passNavArgs(
+                                                        alarmId = alarmData.id!!,
+                                                        alarmHr = alarmData.time.hour,
+                                                        alarmMin = alarmData.time.minute
+                                                    )
+                                                )
+                                            }
+                                        },
+                                        onLongClick = {
+                                            viewModel.onEvent(
+                                                HomeScreenEvents.OnMultiSelectionMode(
+                                                    true
+                                                )
+                                            )
+                                            viewModel.onEvent(
+                                                HomeScreenEvents.OnAlarmSelect(
+                                                    alarmData.id!!
+                                                )
+                                            )
+                                        },
+                                        isMultiSelectionMode = state.isMultiSelectionMode,
+                                        isSelected = state.selectedAlarmList.contains(alarmData.id)
+                                    )
+                                }
+                            }
                         }
                     }
                 }

@@ -7,6 +7,8 @@ interface AlarmRepository {
 
     fun getAllAlarms(): Flow<List<Alarm>>
 
+    fun getAllAlarmsWithoutGroup() : Flow<List<Alarm>>
+
     suspend fun insertAlarm(alarm: Alarm): Long
 
     suspend fun getAlarm(id: Long): Alarm?

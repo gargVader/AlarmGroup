@@ -23,6 +23,12 @@ class AlarmRepositoryImpl @Inject constructor(
             }
     }
 
+    override fun getAllAlarmsWithoutGroup(): Flow<List<Alarm>> {
+        return dao.getAllAlarmsWithoutGroup().map {
+            it.map { alarmEntity -> alarmEntity.toAlarm() }
+        }
+    }
+
     @RequiresApi(Build.VERSION_CODES.O)
     override suspend fun insertAlarm(alarm: Alarm): Long {
         return dao.insertAlarm(alarm.toAlarmEntity())
