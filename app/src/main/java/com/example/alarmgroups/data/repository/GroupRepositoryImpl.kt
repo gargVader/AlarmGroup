@@ -34,6 +34,10 @@ class GroupRepositoryImpl @Inject constructor(
         dao.update(group.toGroupEntity())
     }
 
+    override suspend fun updateGroupIsActive(groupId: Long, isActive: Boolean) {
+        dao.updateGroupIsActive(groupId, isActive)
+    }
+
     override fun getGroupWithAlarms(groupId: Long): Flow<List<GroupWithAlarms>> {
         return dao.getGroupWithAlarms(groupId).map {
             it.map { groupWithAlarmsRelation ->

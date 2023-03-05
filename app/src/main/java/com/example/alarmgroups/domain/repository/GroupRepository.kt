@@ -14,6 +14,8 @@ interface GroupRepository {
 
     suspend fun update(group: Group)
 
+    suspend fun updateGroupIsActive(groupId : Long, isActive : Boolean)
+
     fun getGroupWithAlarms(groupId: Long): Flow<List<GroupWithAlarms>>
 
     fun getAllGroupWithAlarms(): Flow<List<GroupWithAlarms>>

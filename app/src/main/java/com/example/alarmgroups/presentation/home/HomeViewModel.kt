@@ -1,8 +1,6 @@
 package com.example.alarmgroups.presentation.home
 
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -16,7 +14,6 @@ import com.example.alarmgroups.domain.repository.GroupRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
-import java.time.LocalTime
 import javax.inject.Inject
 
 @HiltViewModel
@@ -90,29 +87,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-
-    // test func
-    @RequiresApi(Build.VERSION_CODES.O)
-    fun scheduleAlarmInSeconds(seconds: Int) {
-        createNewAlarm(
-            Alarm(
-                time = LocalTime.now().plusSeconds(seconds.toLong()),
-                label = "test alarm",
-            )
-        )
-    }
-
-    private fun createNewAlarm(alarm: Alarm) {
-        viewModelScope.launch {
-            // Insert in db
-            val rowId = alarmRepo.insertAlarm(alarm)
-            // Then use rowId to schedule alarm
-            alarmHelper.scheduleAlarm(alarm.copy(id = rowId))
-        }
-    }
-
     fun scheduleAlarm(alarm: Alarm) {
-        Log.d("Girish", "scheduleAlarm: ${alarm.time.hour}:${alarm.time.minute}")
         alarmHelper.scheduleAlarm(alarm)
         viewModelScope.launch {
             alarmRepo.updateAlarmActive(alarm.id!!, true)
@@ -120,7 +95,6 @@ class HomeViewModel @Inject constructor(
     }
 
     fun unscheduleAlarm(alarm: Alarm) {
-        Log.d("Girish", "unscheduleAlarm: ${alarm.time.hour}:${alarm.time.minute}")
         alarmHelper.unscheduleAlarm(alarm)
         viewModelScope.launch {
             alarmRepo.updateAlarmActive(alarm.id!!, false)
@@ -132,6 +106,24 @@ class HomeViewModel @Inject constructor(
         alarmHelper.unscheduleAlarm(alarm)
         viewModelScope.launch {
             alarmRepo.deleteAlarm(alarm.id!!)
+        }
+    }
+
+    fun scheduleGroup(groupWithAlarms: GroupWithAlarms) {
+        groupWithAlarms.alarms.filter { it.isActive }.forEach { alarm ->
+            alarmHelper.scheduleAlarm(alarm)
+        }
+        viewModelScope.launch {
+            groupRepo.updateGroupIsActive(groupWithAlarms.group.id!!, true)
+        }
+    }
+
+    fun unscheduleGroup(groupWithAlarms: GroupWithAlarms) {
+        groupWithAlarms.alarms.filter { it.isActive }.forEach { alarm ->
+            alarmHelper.unscheduleAlarm(alarm)
+        }
+        viewModelScope.launch {
+            groupRepo.updateGroupIsActive(groupWithAlarms.group.id!!, false)
         }
     }
 

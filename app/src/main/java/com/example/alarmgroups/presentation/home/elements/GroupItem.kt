@@ -70,10 +70,11 @@ fun GroupItem(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
+                    modifier = Modifier.padding(bottom = 8.dp, end = 8.dp),
                     text = group.label,
+                    color = if (group.isActive) grayLight else grayDark,
                     fontSize = MaterialTheme.typography.h5.fontSize,
                     fontWeight = if (group.isActive) FontWeight.SemiBold else FontWeight.Normal,
-                    modifier = Modifier.padding(bottom = 8.dp, end = 8.dp)
                 )
 
                 IconButton(onClick = { isExpanded = !isExpanded }) {
@@ -101,7 +102,7 @@ fun GroupItem(
                     Switch(
                         checked = group.isActive,
                         onCheckedChange = {
-
+                            onToggleClick(it)
                         },
                     )
                 }

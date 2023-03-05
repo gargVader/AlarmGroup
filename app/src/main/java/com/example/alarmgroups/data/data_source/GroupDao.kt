@@ -20,6 +20,15 @@ interface GroupDao {
     @Update
     suspend fun update(group: GroupEntity)
 
+    @Query(
+        """
+        UPDATE groupentity
+        SET isActive = :isActive
+        WHERE id = :groupId
+    """
+    )
+    suspend fun updateGroupIsActive(groupId: Long, isActive : Boolean)
+
     @Transaction
     @Query("SELECT * FROM groupentity WHERE id = :groupId")
     fun getGroupWithAlarms(groupId: Long): Flow<List<GroupWithAlarmsRelation>>
