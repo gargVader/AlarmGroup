@@ -18,10 +18,10 @@ class AlarmHelperImpl @Inject constructor(
 ) : AlarmHelper {
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun scheduleAlarm(alarm: Alarm) {
+    override fun scheduleAlarm(alarm: Alarm, skipFirstAlarm: Boolean) {
         alarm.days?.let {
             it.forEach { dayOfWeek ->
-                setRepeatingAlarm(dayOfWeek, alarm)
+                setRepeatingAlarm(dayOfWeek, alarm, skipFirstAlarm)
             }
         } ?: setNonRepeatingAlarm(alarm)
 
@@ -46,13 +46,15 @@ class AlarmHelperImpl @Inject constructor(
         app.stopService(Intent(app.applicationContext, AlarmService::class.java))
     }
 
-    private fun setRepeatingAlarm(dayOfWeek: Int, alarm: Alarm) {
+    private fun setRepeatingAlarm(dayOfWeek: Int, alarm: Alarm, skipFirstAlarm: Boolean) {
         Log.d("Girish", "setRepeatingAlarm: dayOfWeek=$dayOfWeek, $alarm")
         val alarmReceiverPendingIntent =
             createAlarmReceiverPendingIntentForSchedule(app, alarm, dayOfWeek)
+        val firstAlarmTriggerMillis = alarm.getAlarmFirstTriggerMillis(dayOfWeek) +
+                (AlarmConstants.WEEK_INTERVAL_MILLIS.takeIf { skipFirstAlarm } ?: 0)
         alarmManager.setInexactRepeating(
             AlarmManager.RTC_WAKEUP,
-            alarm.getAlarmFirstTriggerMillis(dayOfWeek = dayOfWeek),
+            firstAlarmTriggerMillis,
             AlarmConstants.WEEK_INTERVAL_MILLIS,
             alarmReceiverPendingIntent
         )

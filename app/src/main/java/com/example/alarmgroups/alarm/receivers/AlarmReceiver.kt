@@ -31,6 +31,10 @@ class AlarmReceiver : BroadcastReceiver() {
             }
 
             AlarmConstants.ACTION_ALARM_DISMISSED -> {
+                // TODO: While stopping the alarm service, send some extra parameters to AlarmService,
+                //  notifying how you want to end the alarm.
+                //  If the alarm belongs to a group and user has selected DISMISS_ALL, then we must
+                //  first unschedule all alarms in the group, then again schedule alarms
                 context.stopService(alarmServiceIntent)
                 sendBroadcastToCloseAlarmAlertActivity(context)
             }

@@ -93,6 +93,9 @@ class AlarmService : Service() {
     */
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onDestroy() {
+        // TODO:  Handle "dismiss all" here
+        //  unschedule
+
         stopVibration()
         stopSound()
         // remove notification

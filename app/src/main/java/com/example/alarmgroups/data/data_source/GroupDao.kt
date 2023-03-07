@@ -31,7 +31,7 @@ interface GroupDao {
 
     @Transaction
     @Query("SELECT * FROM groupentity WHERE id = :groupId")
-    fun getGroupWithAlarms(groupId: Long): Flow<List<GroupWithAlarmsRelation>>
+    fun getGroupWithAlarms(groupId: Long): Flow<GroupWithAlarmsRelation>
 
     @Transaction
     @Query("SELECT * FROM groupentity")

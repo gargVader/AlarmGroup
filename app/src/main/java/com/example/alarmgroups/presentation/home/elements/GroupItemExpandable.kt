@@ -53,11 +53,13 @@ fun GroupItemExpandable(isVisible: Boolean, alarmList: List<Alarm>) {
                     onClick = { /*TODO*/ },
                     onLongClick = { /*TODO*/ },
                     backgroundColor = black3
-
                 )
             }
         }
-
     }
-
 }
+/*
+TODO:
+ - Currently user can only add alarms to a group and delete an entire group. But cannot remove
+ alarms that have already been added to the group.
+ */
