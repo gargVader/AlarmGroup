@@ -35,6 +35,17 @@ class AlarmReceiver : BroadcastReceiver() {
                 //  notifying how you want to end the alarm.
                 //  If the alarm belongs to a group and user has selected DISMISS_ALL, then we must
                 //  first unschedule all alarms in the group, then again schedule alarms
+
+                Log.d(
+                    "Girish",
+                    "onReceive: ${
+                        intent.getBooleanExtra(
+                            AlarmConstants.EXTRA_IS_DISMISS_ALL,
+                            false
+                        )
+                    }"
+                )
+
                 context.stopService(alarmServiceIntent)
                 sendBroadcastToCloseAlarmAlertActivity(context)
             }
@@ -48,7 +59,6 @@ class AlarmReceiver : BroadcastReceiver() {
         val isOneTimeAlarm: Boolean =
             intent.getBooleanExtra(AlarmConstants.EXTRA_IS_ONE_TIME_ALARM, false)
 
-        Log.d("Girish", "AlarmReceiver: ${intent.action} -> $notificationId $label")
 
         return Intent(context, AlarmService::class.java).apply {
 //            putExtras(intent.extras!!)

@@ -1,8 +1,6 @@
 package com.example.alarmgroups.presentation.alarm_alert
 
 import android.app.Application
-import android.content.Intent
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -10,7 +8,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.example.alarmgroups.alarm.AlarmConstants
 import com.example.alarmgroups.alarm.AlarmHelper
-import com.example.alarmgroups.alarm.services.AlarmService
+import com.example.alarmgroups.alarm.pendingIntent.alarm_service_pending_intent.createAlarmDismissIntent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -33,27 +31,38 @@ class AlarmAlertViewModel @Inject constructor(
 
     private val notificationId: Long = savedStateHandle[AlarmConstants.EXTRA_NOTIFICATION_ID] ?: -1
 
-
-    init {
-        Log.d("Girish", "AlarmAlertViewModel notificationId: $notificationId")
-    }
-
     fun onEvent(event: AlarmAlertScreenEvents) {
         when (event) {
             is AlarmAlertScreenEvents.OnDismissCurrentClick -> {
-                stopAlarmService()
+                sendAlarmDismissEventToAlarmReceiver()
                 _uiState.update {
                     it.copy(
-                        dismissClick = true
+                        dismissThisClick = true
+                    )
+                }
+            }
+
+            is AlarmAlertScreenEvents.OnDismissAllClick -> {
+                sendAlarmDismissEventToAlarmReceiver(true)
+                _uiState.update {
+                    it.copy(
+                        dismissAllClick = true
                     )
                 }
             }
         }
     }
 
-    private fun stopAlarmService() {
-        val alarmServiceIntent = Intent(app, AlarmService::class.java)
-        app.stopService(alarmServiceIntent)
+    private fun sendAlarmDismissEventToAlarmReceiver(isDismissAll: Boolean = false) {
+
+        val alarmDismissIntent =
+            createAlarmDismissIntent(
+                app,
+                notificationId = notificationId,
+                isDismissAll = isDismissAll
+            )
+//         Send this intent to AlarmReceiver
+        app.sendBroadcast(alarmDismissIntent)
     }
 
 }

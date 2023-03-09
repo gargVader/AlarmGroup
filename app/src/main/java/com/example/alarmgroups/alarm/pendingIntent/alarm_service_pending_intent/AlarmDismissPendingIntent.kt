@@ -22,9 +22,14 @@ fun createAlarmDismissPendingIntent(
     )
 }
 
-private fun createAlarmDismissIntent(applicationContext: Context, notificationId: Long): Intent {
+fun createAlarmDismissIntent(
+    applicationContext: Context,
+    notificationId: Long,
+    isDismissAll: Boolean = false
+): Intent {
     return Intent(AlarmConstants.ACTION_ALARM_DISMISSED).apply {
         setClass(applicationContext, AlarmReceiver::class.java)
         putExtra(AlarmConstants.EXTRA_NOTIFICATION_ID, notificationId)
+        putExtra(AlarmConstants.EXTRA_IS_DISMISS_ALL, isDismissAll)
     }
 }

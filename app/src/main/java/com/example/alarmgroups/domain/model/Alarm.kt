@@ -1,6 +1,5 @@
 package com.example.alarmgroups.domain.model
 
-import android.util.Log
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -54,7 +53,6 @@ data class Alarm(
     fun getAlarmFirstTriggerMillis(
         dayOfWeek: Int? = null,
     ): Long {
-        Log.d("Girish", "getAlarmFirstTriggerMillis: ${getAlarmFirstTrigger(dayOfWeek)}")
         return getAlarmFirstTrigger(dayOfWeek).atZone(ZoneId.systemDefault())
             .toEpochSecond() * 1000
     }
@@ -64,7 +62,4 @@ data class Alarm(
 
     val MinString: String
         get() = time.minute.toString().padStart(2, '0')
-
-
-
 }

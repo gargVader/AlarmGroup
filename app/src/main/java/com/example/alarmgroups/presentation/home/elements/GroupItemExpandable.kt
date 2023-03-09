@@ -9,7 +9,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import com.example.alarmgroups.domain.model.Alarm
-import com.example.alarmgroups.ui.theme.black1
 import com.example.alarmgroups.ui.theme.black3
 
 @Composable

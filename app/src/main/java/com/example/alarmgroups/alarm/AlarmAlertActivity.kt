@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -33,7 +32,6 @@ class AlarmAlertActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d("Girish", "onCreate: AlarmAlertActivity")
         turnScreenOnAndKeyguardOff()
 
         val label = intent.getStringExtra(AlarmConstants.EXTRA_LABEL) ?: ""
@@ -45,7 +43,7 @@ class AlarmAlertActivity : ComponentActivity() {
 
         lifecycleScope.launch {
             viewModel.uiState.collect {
-                if (it.dismissClick) {
+                if (it.dismissAllClick or it.dismissThisClick) {
                     finish()
                 }
             }

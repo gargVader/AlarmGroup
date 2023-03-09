@@ -1,6 +1,5 @@
 package com.example.alarmgroups.presentation.alarm_details
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -63,13 +62,11 @@ class AlarmDetailsViewModel @Inject constructor(
             }
 
             is AlarmDetailsScreenEvents.OnTimeChange -> {
-                Log.d("Girish", "AlarmDetailsScreenEvents.OnTimeChange: time=${event.time}")
                 state = state.copy(time = event.time)
             }
 
             is AlarmDetailsScreenEvents.OnSaveClick -> {
                 if (isAlarmEditMode(alarmId)) {
-                    Log.d("Girish", "onEvent: OnSaveClick days=${state.days}")
                     updateAlarm(
                         Alarm(
                             id = alarmId,

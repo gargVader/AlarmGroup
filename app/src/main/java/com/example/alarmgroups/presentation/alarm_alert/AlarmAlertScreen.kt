@@ -3,10 +3,12 @@ package com.example.alarmgroups.presentation.alarm_alert
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
@@ -38,9 +40,16 @@ fun AlarmAlertScreen(
             fontSize = 24.sp
         )
 
-        Row {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
             Button(onClick = { viewModel.onEvent(AlarmAlertScreenEvents.OnDismissCurrentClick) }) {
-                Text(text = "Dismiss Current")
+                Text(text = "Dismiss this")
+            }
+
+            Button(onClick = { viewModel.onEvent(AlarmAlertScreenEvents.OnDismissAllClick) }) {
+                Text(text = "Dismiss all")
             }
         }
 

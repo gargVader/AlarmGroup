@@ -14,6 +14,7 @@ import com.example.alarmgroups.alarm.AlarmConstants
 import com.example.alarmgroups.alarm.pendingIntent.alarm_service_pending_intent.createAlarmAlertPendingIntent
 import com.example.alarmgroups.alarm.pendingIntent.alarm_service_pending_intent.createAlarmDismissPendingIntent
 import com.example.alarmgroups.domain.repository.AlarmRepository
+import com.example.alarmgroups.domain.repository.GroupRepository
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -33,7 +34,10 @@ class AlarmService : Service() {
     private var serviceHandler: ServiceHandler? = null
 
     @Inject
-    lateinit var repo: AlarmRepository
+    lateinit var alarmRepo: AlarmRepository
+
+    @Inject
+    lateinit var groupRepo: GroupRepository
 
     lateinit var mediaPlayer: MediaPlayer
 
@@ -93,9 +97,6 @@ class AlarmService : Service() {
     */
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onDestroy() {
-        // TODO:  Handle "dismiss all" here
-        //  unschedule
-
         stopVibration()
         stopSound()
         // remove notification
@@ -124,7 +125,7 @@ class AlarmService : Service() {
 
     private fun turnOffAlarm(alarmId: Long) {
         CoroutineScope(Dispatchers.IO).launch {
-            repo.updateAlarmActive(alarmId, false)
+            alarmRepo.updateAlarmActive(alarmId, false)
         }
     }
 
@@ -155,8 +156,8 @@ class AlarmService : Service() {
 
     companion object {
         const val ALARM_NOTIFICATION_CHANNEL_ID = "channelId"
-        const val ALARM_NOTIFICATION_CHANNEL_NAME = "channelName"
-        const val ALARM_NOTIFICATION_CHANNEL_DESCRIPTION = "channelDescription"
+        const val ALARM_NOTIFICATION_CHANNEL_NAME = "Alarm Bees"
+        const val ALARM_NOTIFICATION_CHANNEL_DESCRIPTION = "To show notification for alarms"
     }
 
 }
