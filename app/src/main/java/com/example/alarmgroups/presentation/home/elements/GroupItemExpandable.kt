@@ -12,7 +12,12 @@ import com.example.alarmgroups.domain.model.Alarm
 import com.example.alarmgroups.ui.theme.black3
 
 @Composable
-fun GroupItemExpandable(isVisible: Boolean, alarmList: List<Alarm>) {
+fun GroupItemExpandable(
+    isVisible: Boolean,
+    alarmList: List<Alarm>,
+    onAlarmClick: (alarm: Alarm) -> Unit,
+    onAlarmToggleClick: (alarm: Alarm, isActive: Boolean) -> Unit,
+) {
     val EXPANSTION_TRANSITION_DURATION = 500
     val enterTransition = remember {
         expandVertically(
@@ -45,11 +50,11 @@ fun GroupItemExpandable(isVisible: Boolean, alarmList: List<Alarm>) {
         Column(
         ) {
 
-            alarmList.forEach {
+            alarmList.forEach { alarm ->
                 AlarmItem(
-                    alarm = it,
-                    onToggleClick = {},
-                    onClick = { /*TODO*/ },
+                    alarm = alarm,
+                    onToggleClick = { onAlarmToggleClick(alarm, it) },
+                    onClick = { onAlarmClick(alarm) },
                     onLongClick = { /*TODO*/ },
                     backgroundColor = black3
                 )

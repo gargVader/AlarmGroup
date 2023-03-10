@@ -19,6 +19,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.alarmgroups.domain.model.Alarm
 import com.example.alarmgroups.domain.model.GroupWithAlarms
 import com.example.alarmgroups.ui.theme.*
 
@@ -29,6 +30,8 @@ fun GroupItem(
     modifier: Modifier = Modifier,
     groupWithAlarms: GroupWithAlarms,
     onToggleClick: (isActive: Boolean) -> Unit,
+    onAlarmClick: (alarm: Alarm) -> Unit,
+    onAlarmToggleClick: (alarm: Alarm, isActive: Boolean) -> Unit,
 ) {
 
     val group = groupWithAlarms.group
@@ -48,7 +51,7 @@ fun GroupItem(
             .padding(top = 8.dp)
             .clip(RoundedCornerShape(32.dp))
             .combinedClickable(
-                onClick = {  },
+                onClick = { },
                 onLongClick = { }
             ),
         shape = RoundedCornerShape(32.dp),
@@ -91,7 +94,12 @@ fun GroupItem(
                         alarmList.forEach {
                             Text(
                                 text = "${it.HrString}:${it.MinString}",
-                                color = if (it.isActive) grayLight else grayDark
+                                color = if (group.isActive) {
+                                    if (it.isActive) grayLight else grayDark
+                                } else {
+                                    grayDark
+                                }
+
                             )
                         }
                     }
@@ -103,7 +111,12 @@ fun GroupItem(
                     )
                 }
             }
-            GroupItemExpandable(isVisible = isExpanded, alarmList = alarmList)
+            GroupItemExpandable(
+                isVisible = isExpanded,
+                alarmList = alarmList,
+                onAlarmClick = onAlarmClick,
+                onAlarmToggleClick = onAlarmToggleClick,
+            )
 
 
         }

@@ -116,6 +116,23 @@ fun HomeScreen(
                                                 viewModel.unscheduleGroup(alarmData)
                                             }
                                         },
+                                        onAlarmClick = { alarm ->
+                                            // navigate to item
+                                            navController.navigate(
+                                                Screen.AlarmDetailsScreen.passNavArgs(
+                                                    alarmId = alarm.id!!,
+                                                    alarmHr = alarm.time.hour,
+                                                    alarmMin = alarm.time.minute
+                                                )
+                                            )
+                                        },
+                                        onAlarmToggleClick = { alarm, isActive ->
+                                            if (isActive) {
+                                                viewModel.scheduleAlarm(alarm)
+                                            } else {
+                                                viewModel.unscheduleAlarm(alarm)
+                                            }
+                                        }
                                     )
                                 }
                             }
