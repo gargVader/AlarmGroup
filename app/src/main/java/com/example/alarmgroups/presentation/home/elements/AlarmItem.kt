@@ -1,6 +1,7 @@
 package com.example.alarmgroups.presentation.home
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -22,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.alarmgroups.alarm.AlarmConstants
 import com.example.alarmgroups.domain.model.Alarm
+import com.example.alarmgroups.presentation.common.CustomSwitchButton
 import com.example.alarmgroups.ui.theme.*
 import java.time.LocalTime
 
@@ -36,7 +38,7 @@ fun AlarmItem(
     onLongClick: () -> Unit,
     isMultiSelectionMode: Boolean = false, // decides whether or not to show the Switch
     isSelected: Boolean = false,
-    backgroundColor : Color= black2
+    backgroundColor: Color = black2
 ) {
     Card(
         modifier = modifier
@@ -87,7 +89,8 @@ fun AlarmItem(
                     Icon(Icons.Outlined.Circle, contentDescription = null)
                 }
             } else {
-                Switch(
+                Log.d("Girish", "AlarmItem: isActive=${alarm.isActive}")
+                CustomSwitchButton(
                     checked = alarm.isActive,
                     onCheckedChange = {
                         onToggleClick(it)

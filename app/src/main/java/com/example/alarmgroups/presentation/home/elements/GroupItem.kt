@@ -21,6 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.alarmgroups.domain.model.Alarm
 import com.example.alarmgroups.domain.model.GroupWithAlarms
+import com.example.alarmgroups.presentation.common.CustomSwitchButton
 import com.example.alarmgroups.ui.theme.*
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -103,7 +104,7 @@ fun GroupItem(
                             )
                         }
                     }
-                    Switch(
+                    CustomSwitchButton(
                         checked = group.isActive,
                         onCheckedChange = {
                             onToggleClick(it)

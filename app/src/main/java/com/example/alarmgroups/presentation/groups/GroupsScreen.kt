@@ -50,7 +50,7 @@ fun GroupsScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(start = 12.dp, end = 12.dp)
+            .padding(start = 12.dp, end = 12.dp, top = 16.dp)
             .background(color = MaterialTheme.colors.background)
     ) {
         if (groupsState.showNewGroupDialog) {
