@@ -15,6 +15,7 @@ class AlarmConstants {
         const val EXTRA_LABEL = "ALARM_LABEL"
         const val EXTRA_IS_ONE_TIME_ALARM = "IS_ONE_TIME_ALARM"
         const val EXTRA_IS_DISMISS_ALL = "IS_DISMISS_ALL"
+        const val EXTRA_IS_DISMISS = "IS_DISMISS"
 
         const val WEEK_INTERVAL_MILLIS: Long = 7 * 24 * 60 * 60 * 1000
         const val ALARM_DURATION_MILLIS: Long = 30 * 1000

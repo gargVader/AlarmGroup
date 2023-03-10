@@ -11,8 +11,10 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import com.example.alarmgroups.R
 import com.example.alarmgroups.alarm.AlarmConstants
+import com.example.alarmgroups.alarm.AlarmHelper
 import com.example.alarmgroups.alarm.pendingIntent.alarm_service_pending_intent.createAlarmAlertPendingIntent
 import com.example.alarmgroups.alarm.pendingIntent.alarm_service_pending_intent.createAlarmDismissPendingIntent
+import com.example.alarmgroups.domain.model.Alarm
 import com.example.alarmgroups.domain.repository.AlarmRepository
 import com.example.alarmgroups.domain.repository.GroupRepository
 import dagger.hilt.android.AndroidEntryPoint
@@ -42,10 +44,14 @@ class AlarmService : Service() {
     lateinit var mediaPlayer: MediaPlayer
 
     @Inject
+    lateinit var alarmHelper: AlarmHelper
+
+    @Inject
     lateinit var vibrator: Vibrator
 
     // Handler that receives messages from the thread
     private inner class ServiceHandler(looper: Looper) : Handler(looper) {
+
         override fun handleMessage(message: Message) {
             super.handleMessage(message)
 
@@ -53,16 +59,58 @@ class AlarmService : Service() {
             val notificationId = message.data.getLong(AlarmConstants.EXTRA_NOTIFICATION_ID)
             val isOneTimeAlarm: Boolean =
                 message.data.getBoolean(AlarmConstants.EXTRA_IS_ONE_TIME_ALARM)
+            val isDismissAll = message.data.getBoolean(AlarmConstants.EXTRA_IS_DISMISS_ALL, false)
+            val isDismiss = message.data.getBoolean(AlarmConstants.EXTRA_IS_DISMISS, false)
 
-            // Start Notification
-            startForeground(
-                notificationId.toInt(),
-                createNotification(label, notificationId)
-            )
-            startVibration()
-            startSound()
+            when (isDismiss) {
+                true -> {
+                    if (isDismissAll) {
+                        // Dismiss remaining alarms in this group
+                        CoroutineScope(Dispatchers.IO).launch {
+                            val groupWithAlarms = alarmRepo.getAlarmGroup(notificationId)
+                            updateAlarmsInGroup(groupWithAlarms.alarms, notificationId)
+                        }
+
+                    }
+                    stopSelf()
+                }
+
+                false -> {
+                    // 1. Start Notification
+                    startForeground(
+                        notificationId.toInt(),
+                        createNotification(label, notificationId)
+                    )
+                    // 2. Start vibration
+                    startVibration()
+                    // 3. Start sound
+                    startSound()
+                }
+            }
+
             if (isOneTimeAlarm) {
                 turnOffAlarm(alarmId = notificationId)
+            }
+        }
+    }
+
+    /*
+
+     */
+    fun updateAlarmsInGroup(alarms: List<Alarm>, currentAlarmId: Long) {
+        var currentAlarmIdx = Int.MAX_VALUE
+        alarms.filter {
+            // delay only those alarms which are active and are repeating
+            val isRepeating = it.days?.isNotEmpty() ?: false
+            it.isActive and isRepeating
+        }.forEachIndexed { index, alarm ->
+            if (alarm.id == currentAlarmId) currentAlarmIdx = index
+            // All the alarms appearing after currentAlarmIdx need to be operated on
+            if (index > currentAlarmIdx) {
+                // 1. unschedule
+                alarmHelper.unscheduleAlarm(alarm)
+                // 2. schedule them by skipping first alarm, i.e, delay the first alarm trigger time by 1 week
+                alarmHelper.scheduleAlarm(alarm, skipFirstAlarm = true)
             }
         }
     }
@@ -155,7 +203,7 @@ class AlarmService : Service() {
     }
 
     companion object {
-        const val ALARM_NOTIFICATION_CHANNEL_ID = "channelId"
+        const val ALARM_NOTIFICATION_CHANNEL_ID = "Alarm_Bees_Channel_Id"
         const val ALARM_NOTIFICATION_CHANNEL_NAME = "Alarm Bees"
         const val ALARM_NOTIFICATION_CHANNEL_DESCRIPTION = "To show notification for alarms"
     }

@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.util.Log
 import com.example.alarmgroups.alarm.AlarmConstants
 import com.example.alarmgroups.alarm.services.AlarmService
 import java.util.*
@@ -31,22 +30,9 @@ class AlarmReceiver : BroadcastReceiver() {
             }
 
             AlarmConstants.ACTION_ALARM_DISMISSED -> {
-                // TODO: While stopping the alarm service, send some extra parameters to AlarmService,
-                //  notifying how you want to end the alarm.
-                //  If the alarm belongs to a group and user has selected DISMISS_ALL, then we must
-                //  first unschedule all alarms in the group, then again schedule alarms
-
-                Log.d(
-                    "Girish",
-                    "onReceive: ${
-                        intent.getBooleanExtra(
-                            AlarmConstants.EXTRA_IS_DISMISS_ALL,
-                            false
-                        )
-                    }"
-                )
-
-                context.stopService(alarmServiceIntent)
+                // stopService doesn't send the intent. So, alarm dismiss is handled in AlarmService
+                alarmServiceIntent.putExtra(AlarmConstants.EXTRA_IS_DISMISS, true)
+                context.startService(alarmServiceIntent)
                 sendBroadcastToCloseAlarmAlertActivity(context)
             }
         }
@@ -54,17 +40,8 @@ class AlarmReceiver : BroadcastReceiver() {
     }
 
     private fun createAlarmServiceIntent(context: Context, intent: Intent): Intent {
-        val notificationId: Long = intent.getLongExtra(AlarmConstants.EXTRA_NOTIFICATION_ID, -1)
-        val label: String? = intent.getStringExtra(AlarmConstants.EXTRA_LABEL)
-        val isOneTimeAlarm: Boolean =
-            intent.getBooleanExtra(AlarmConstants.EXTRA_IS_ONE_TIME_ALARM, false)
-
-
         return Intent(context, AlarmService::class.java).apply {
-//            putExtras(intent.extras!!)
-            putExtra(AlarmConstants.EXTRA_NOTIFICATION_ID, notificationId)
-            putExtra(AlarmConstants.EXTRA_LABEL, label)
-            putExtra(AlarmConstants.EXTRA_IS_ONE_TIME_ALARM, isOneTimeAlarm)
+            putExtras(intent.extras!!)
         }
     }
 

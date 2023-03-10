@@ -2,6 +2,8 @@ package com.example.alarmgroups.data.data_source
 
 import androidx.room.*
 import com.example.alarmgroups.data.model.AlarmEntity
+import com.example.alarmgroups.data.model.relations.GroupWithAlarmsRelation
+import com.example.alarmgroups.domain.model.GroupWithAlarms
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -51,4 +53,9 @@ interface AlarmDao {
 
     @Query("DELETE FROM alarmentity")
     suspend fun deleteAllAlarms()
+
+    @Transaction
+    @Query("SELECT * FROM groupentity WHERE id IN (SELECT groupId FROM (SELECT * FROM alarmentity WHERE id = :alarmId))")
+    suspend fun getAlarmGroup(alarmId : Long) : GroupWithAlarmsRelation
+
 }

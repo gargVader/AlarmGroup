@@ -3,10 +3,13 @@ package com.example.alarmgroups.data.repository
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.example.alarmgroups.data.data_source.AlarmDao
+import com.example.alarmgroups.data.model.relations.GroupWithAlarmsRelation
 import com.example.alarmgroups.domain.model.Alarm
+import com.example.alarmgroups.domain.model.GroupWithAlarms
 import com.example.alarmgroups.domain.repository.AlarmRepository
 import com.example.alarmgroups.mapper.toAlarm
 import com.example.alarmgroups.mapper.toAlarmEntity
+import com.example.alarmgroups.mapper.toGroupWithAlarms
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -57,6 +60,10 @@ class AlarmRepositoryImpl @Inject constructor(
 
     override suspend fun updateAlarmWithGroupId(alarmId: Long, groupId: Long) {
         dao.updateAlarmWithGroupId(alarmId, groupId)
+    }
+
+    override suspend fun getAlarmGroup(alarmId : Long) : GroupWithAlarms {
+        return dao.getAlarmGroup(alarmId).toGroupWithAlarms()
     }
 
 }
