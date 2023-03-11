@@ -46,11 +46,12 @@ class AlarmDetailsViewModel @Inject constructor(
             val alarm = repo.getAlarm(id = alarmId)
             alarm?.let {
                 // alarm found. So we are in edit mode
-                state = state.copy(isEditMode = true)
-                if (!it.label.isNullOrBlank()) {
-                    state = state.copy(label = it.label)
-                }
-                state = state.copy(days = it.days)
+                state = state.copy(
+                    isEditMode = true,
+                    days = it.days,
+                    label = if (!it.label.isNullOrBlank()) it.label else "",
+                    groupId = it.groupId
+                )
             }
         }
     }
@@ -72,7 +73,8 @@ class AlarmDetailsViewModel @Inject constructor(
                             id = alarmId,
                             time = state.time,
                             label = state.label,
-                            days = state.days
+                            days = state.days,
+                            groupId = state.groupId,
                         )
                     )
                 } else {

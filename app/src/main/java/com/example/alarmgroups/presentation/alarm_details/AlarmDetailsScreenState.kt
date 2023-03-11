@@ -10,7 +10,8 @@ then create a new Alarm object upon every state update.
  */
 data class AlarmDetailsScreenState(
     val time: LocalTime = LocalTime.now(),
-    val label: String = "",
-    val isEditMode: Boolean = false,
     val days: List<Int>? = null,
+    val label: String = "",
+    val groupId: Long? = null,
+    val isEditMode: Boolean = false,
 )

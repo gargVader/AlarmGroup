@@ -122,7 +122,7 @@ fun PreviewAlarmItem() {
             label = "Wake up"
         ),
         onToggleClick = {},
-        onClick = { /*TODO*/ },
-        onLongClick = { /*TODO*/ }
+        onClick = {  },
+        onLongClick = {  }
     )
 }

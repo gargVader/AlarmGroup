@@ -55,7 +55,7 @@ fun GroupItemExpandable(
                     alarm = alarm,
                     onToggleClick = { onAlarmToggleClick(alarm, it) },
                     onClick = { onAlarmClick(alarm) },
-                    onLongClick = { /*TODO*/ },
+                    onLongClick = {  },
                     backgroundColor = black3
                 )
             }
