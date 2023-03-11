@@ -68,7 +68,9 @@ class AlarmService : Service() {
                         // Dismiss remaining alarms in this group
                         CoroutineScope(Dispatchers.IO).launch {
                             val groupWithAlarms = alarmRepo.getAlarmGroup(notificationId)
-                            updateAlarmsInGroup(groupWithAlarms.alarms, notificationId)
+                            if (groupWithAlarms != null) {
+                                updateAlarmsInGroup(groupWithAlarms.alarms, notificationId)
+                            }
                         }
 
                     }
@@ -157,7 +159,7 @@ class AlarmService : Service() {
         val alarmDismissPendingIntent =
             createAlarmDismissPendingIntent(applicationContext, pendingIntentId = notificationId)
         return NotificationCompat.Builder(applicationContext, ALARM_NOTIFICATION_CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_launcher_background)
+            .setSmallIcon(R.mipmap.ic_launcher)
             .setContentTitle(label)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setFullScreenIntent(

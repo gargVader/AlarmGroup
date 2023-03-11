@@ -56,6 +56,6 @@ interface AlarmDao {
 
     @Transaction
     @Query("SELECT * FROM groupentity WHERE id IN (SELECT groupId FROM (SELECT * FROM alarmentity WHERE id = :alarmId))")
-    suspend fun getAlarmGroup(alarmId : Long) : GroupWithAlarmsRelation
+    suspend fun getAlarmGroup(alarmId : Long) : GroupWithAlarmsRelation?
 
 }

@@ -25,6 +25,6 @@ interface AlarmRepository {
 
     suspend fun updateAlarmWithGroupId(alarmId: Long, groupId: Long)
 
-    suspend fun getAlarmGroup(alarmId : Long) : GroupWithAlarms
+    suspend fun getAlarmGroup(alarmId : Long) : GroupWithAlarms?
 
 }

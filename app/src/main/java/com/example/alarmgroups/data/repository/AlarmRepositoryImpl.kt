@@ -62,8 +62,8 @@ class AlarmRepositoryImpl @Inject constructor(
         dao.updateAlarmWithGroupId(alarmId, groupId)
     }
 
-    override suspend fun getAlarmGroup(alarmId : Long) : GroupWithAlarms {
-        return dao.getAlarmGroup(alarmId).toGroupWithAlarms()
+    override suspend fun getAlarmGroup(alarmId : Long) : GroupWithAlarms? {
+        return dao.getAlarmGroup(alarmId)?.toGroupWithAlarms()
     }
 
 }
