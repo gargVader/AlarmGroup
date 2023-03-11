@@ -82,7 +82,9 @@ fun HomeScreen(
                             // Return a stable + unique key for the item
                             when (alarmData) {
                                 is Alarm -> alarmData.id!!
-                                is GroupWithAlarms -> alarmData.group.id!!
+                                // group id not returned because there might be cases when there exists
+                                // an independent alarm whose alarmId is same as another group's groupId
+                                is GroupWithAlarms -> alarmData.alarms.first().id!!
                                 else -> {}
                             }
                         }
