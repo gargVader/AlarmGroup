@@ -3,7 +3,6 @@ package com.example.alarmgroups.data.data_source
 import androidx.room.*
 import com.example.alarmgroups.data.model.AlarmEntity
 import com.example.alarmgroups.data.model.relations.GroupWithAlarmsRelation
-import com.example.alarmgroups.domain.model.GroupWithAlarms
 import kotlinx.coroutines.flow.Flow
 
 @Dao

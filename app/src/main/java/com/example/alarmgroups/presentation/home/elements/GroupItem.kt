@@ -25,7 +25,6 @@ import com.example.alarmgroups.presentation.common.CustomSwitchButton
 import com.example.alarmgroups.ui.theme.*
 
 @OptIn(ExperimentalFoundationApi::class)
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun GroupItem(
     modifier: Modifier = Modifier,

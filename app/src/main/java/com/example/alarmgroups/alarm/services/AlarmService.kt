@@ -147,7 +147,6 @@ class AlarmService : Service() {
     This is called when the service is stopped by calling
     app.stopService(Intent(app.applicationContext, AlarmService::class.java))
     */
-    @RequiresApi(Build.VERSION_CODES.N)
     override fun onDestroy() {
         stopVibration()
         stopSound()
@@ -185,7 +184,6 @@ class AlarmService : Service() {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun startVibration() {
         val pattern: LongArray = longArrayOf(0, 1000, 500)
         val effect = VibrationEffect.createWaveform(pattern, 0)

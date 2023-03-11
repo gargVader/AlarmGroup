@@ -29,7 +29,6 @@ class AlarmAlertActivity : ComponentActivity() {
     private val viewModel: AlarmAlertViewModel by viewModels()
     val broadcastReceiver = AlarmAlertActivityReceiver()
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         turnScreenOnAndKeyguardOff()
@@ -69,7 +68,6 @@ class AlarmAlertActivity : ComponentActivity() {
         unregisterAlarmAlertActivityCloseReceiver()
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun turnScreenOnAndKeyguardOff() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
             setShowWhenLocked(true)
@@ -101,7 +99,6 @@ class AlarmAlertActivity : ComponentActivity() {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun registerAlarmAlertActivityCloseReceiver() {
         val filter = IntentFilter(AlarmConstants.ACTION_ALARM_ALERT_ACTIVITY_CLOSE)
         registerReceiver(broadcastReceiver, filter, RECEIVER_NOT_EXPORTED)

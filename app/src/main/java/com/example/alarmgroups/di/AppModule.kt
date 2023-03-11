@@ -8,7 +8,6 @@ import android.content.Context
 import android.os.Build
 import android.os.Vibrator
 import android.os.VibratorManager
-import androidx.annotation.RequiresApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,7 +18,6 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
-    @RequiresApi(Build.VERSION_CODES.M)
     @Provides
     @Singleton
     fun provideAlarmManager(app: Application): AlarmManager {

@@ -3,9 +3,7 @@ package com.example.alarmgroups.alarm
 import android.app.AlarmManager
 import android.app.Application
 import android.content.Intent
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
 import com.example.alarmgroups.alarm.pendingIntent.alarm_manager_pending_intent.createAlarmReceiverPendingIntentForSchedule
 import com.example.alarmgroups.alarm.pendingIntent.alarm_manager_pending_intent.createAlarmReceiverPendingIntentForUnSchedule
 import com.example.alarmgroups.alarm.services.AlarmService
@@ -17,7 +15,6 @@ class AlarmHelperImpl @Inject constructor(
     private val alarmManager: AlarmManager,
 ) : AlarmHelper {
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun scheduleAlarm(alarm: Alarm, skipFirstAlarm: Boolean) {
         alarm.days?.let {
             it.forEach { dayOfWeek ->
@@ -61,7 +58,6 @@ class AlarmHelperImpl @Inject constructor(
 
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun setNonRepeatingAlarm(alarm: Alarm) {
         val alarmReceiverPendingIntent = createAlarmReceiverPendingIntentForSchedule(app, alarm)
         alarmManager.setExactAndAllowWhileIdle(

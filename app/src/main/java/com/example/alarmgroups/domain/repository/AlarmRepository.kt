@@ -1,6 +1,5 @@
 package com.example.alarmgroups.domain.repository
 
-import com.example.alarmgroups.data.model.relations.GroupWithAlarmsRelation
 import com.example.alarmgroups.domain.model.Alarm
 import com.example.alarmgroups.domain.model.GroupWithAlarms
 import kotlinx.coroutines.flow.Flow

@@ -28,7 +28,6 @@ import com.example.alarmgroups.ui.theme.*
 import java.time.LocalTime
 
 @OptIn(ExperimentalFoundationApi::class)
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AlarmItem(
     modifier: Modifier = Modifier,

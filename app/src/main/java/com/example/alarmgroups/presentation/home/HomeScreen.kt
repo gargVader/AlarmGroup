@@ -2,10 +2,8 @@ package com.example.alarmgroups.presentation.home
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.os.Build
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -33,7 +31,6 @@ import com.example.alarmgroups.presentation.utils.SwipeActionsConfig
 @OptIn(
     ExperimentalMaterialApi::class, ExperimentalFoundationApi::class,
 )
-@RequiresApi(Build.VERSION_CODES.O)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun HomeScreen(
