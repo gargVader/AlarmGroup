@@ -3,6 +3,7 @@ package com.example.alarmgroups.alarm.services
 import android.app.Notification
 import android.app.Service
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.media.MediaPlayer
 import android.media.RingtoneManager
 import android.os.*
@@ -21,6 +22,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.time.LocalTime
 import javax.inject.Inject
 
 /**
@@ -154,13 +156,17 @@ class AlarmService : Service() {
     }
 
     private fun createNotification(label: String, notificationId: Long): Notification {
+        val time = LocalTime.now()
+        val text = "${time.hour.toString().padStart(2, '0')}:${time.minute.toString().padStart(2, '0')}"
         val alarmAlertPendingIntent =
             createAlarmAlertPendingIntent(applicationContext, label, notificationId)
         val alarmDismissPendingIntent =
             createAlarmDismissPendingIntent(applicationContext, pendingIntentId = notificationId)
         return NotificationCompat.Builder(applicationContext, ALARM_NOTIFICATION_CHANNEL_ID)
             .setSmallIcon(R.mipmap.ic_launcher)
-            .setContentTitle(label)
+            .setLargeIcon(BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher))
+            .setContentTitle(text)
+            .setContentText(label)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setFullScreenIntent(
                 alarmAlertPendingIntent, true
