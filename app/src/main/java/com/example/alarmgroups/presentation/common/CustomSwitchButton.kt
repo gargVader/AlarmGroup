@@ -33,18 +33,14 @@ fun CustomSwitchButton(
         MutableInteractionSource()
     }
 
-    var switchClicked by remember {
-        mutableStateOf(checked)
-    }
-
     var padding by remember {
         mutableStateOf(0.dp)
     }
 
-    padding = if (switchClicked) buttonWidth - switchSize - switchPadding * 2 else 0.dp
+    padding = if (checked) buttonWidth - switchSize - switchPadding * 2 else 0.dp
 
     val animateSize by animateDpAsState(
-        targetValue = if (switchClicked) padding else 0.dp,
+        targetValue = if (checked) padding else 0.dp,
         tween(
             durationMillis = 300,
             delayMillis = 0,
@@ -57,14 +53,12 @@ fun CustomSwitchButton(
             .width(buttonWidth)
             .height(buttonHeight)
             .clip(CircleShape)
-            .background(if (switchClicked) orangeDark else Color.LightGray)
+            .background(if (checked) orangeDark else Color.LightGray)
             .clickable(
                 interactionSource = interactionSource,
                 indication = null
             ) {
-                // Wrong way of doing
-                onCheckedChange(!switchClicked)
-                switchClicked = !switchClicked
+                onCheckedChange(!checked)
             }
     ) {
         Row(
