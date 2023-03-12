@@ -79,7 +79,9 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             alarmRepo.getAllAlarmsWithoutGroup()
                 .combine(groupRepo.getAllGroupWithAlarms()) { alarmsWithoutGroup: List<Alarm>, groupWithAlarms: List<GroupWithAlarms> ->
-                    groupWithAlarms + alarmsWithoutGroup
+                    groupWithAlarms.filter {
+                        it.alarms.isNotEmpty()
+                    } + alarmsWithoutGroup
                 }.collect {
                     state = state.copy(alarmDataList = it)
                 }
