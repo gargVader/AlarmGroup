@@ -8,10 +8,10 @@ import android.media.MediaPlayer
 import android.media.RingtoneManager
 import android.os.*
 import android.os.Process.THREAD_PRIORITY_BACKGROUND
-import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import com.example.alarmgroups.R
 import com.example.alarmgroups.alarm.AlarmConstants
+import com.example.alarmgroups.alarm.AlarmDismissType
 import com.example.alarmgroups.alarm.AlarmHelper
 import com.example.alarmgroups.alarm.pendingIntent.alarm_service_pending_intent.createAlarmAlertPendingIntent
 import com.example.alarmgroups.alarm.pendingIntent.alarm_service_pending_intent.createAlarmDismissPendingIntent
@@ -61,25 +61,32 @@ class AlarmService : Service() {
             val notificationId = message.data.getLong(AlarmConstants.EXTRA_NOTIFICATION_ID)
             val isOneTimeAlarm: Boolean =
                 message.data.getBoolean(AlarmConstants.EXTRA_IS_ONE_TIME_ALARM)
-            val isDismissAll = message.data.getBoolean(AlarmConstants.EXTRA_IS_DISMISS_ALL, false)
-            val isDismiss = message.data.getBoolean(AlarmConstants.EXTRA_IS_DISMISS, false)
+            val alarmDismissType: AlarmDismissType? =
+                message.data.getString(AlarmConstants.EXTRA_ALARM_DISMISS_TYPE)?.let {
+                    AlarmDismissType.valueOf(it)
+                }
 
-            when (isDismiss) {
-                true -> {
-                    if (isDismissAll) {
-                        // Dismiss remaining alarms in this group
-                        CoroutineScope(Dispatchers.IO).launch {
-                            val groupWithAlarms = alarmRepo.getAlarmGroup(notificationId)
-                            if (groupWithAlarms != null) {
-                                updateAlarmsInGroup(groupWithAlarms.alarms, notificationId)
-                            }
+            when (alarmDismissType) {
+
+                AlarmDismissType.DISMISS_AUTO -> {
+                    stopSelf()
+                }
+
+                AlarmDismissType.DISMISS_THIS -> {
+                    stopSelf()
+                }
+
+                AlarmDismissType.DISMISS_ALL -> {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        val groupWithAlarms = alarmRepo.getAlarmGroup(notificationId)
+                        if (groupWithAlarms != null) {
+                            updateAlarmsInGroup(groupWithAlarms.alarms, notificationId)
                         }
-
                     }
                     stopSelf()
                 }
 
-                false -> {
+                else -> {
                     // 1. Start Notification
                     startForeground(
                         notificationId.toInt(),
@@ -89,6 +96,7 @@ class AlarmService : Service() {
                     startVibration()
                     // 3. Start sound
                     startSound()
+
                 }
             }
 
@@ -156,25 +164,29 @@ class AlarmService : Service() {
 
     private fun createNotification(label: String, notificationId: Long): Notification {
         val time = LocalTime.now()
-        val text = "${time.hour.toString().padStart(2, '0')}:${time.minute.toString().padStart(2, '0')}"
+        val text =
+            "${time.hour.toString().padStart(2, '0')}:${time.minute.toString().padStart(2, '0')}"
         val alarmAlertPendingIntent =
             createAlarmAlertPendingIntent(applicationContext, label, notificationId)
-        val alarmDismissPendingIntent =
-            createAlarmDismissPendingIntent(applicationContext, pendingIntentId = notificationId)
+        val alarmDismissThisPendingIntent = createAlarmDismissPendingIntent(
+            applicationContext = applicationContext,
+            pendingIntentId = notificationId,
+            alarmDismissType = AlarmDismissType.DISMISS_THIS
+        )
+        val alarmDismissAllPendingIntent = createAlarmDismissPendingIntent(
+            applicationContext = applicationContext,
+            pendingIntentId = notificationId,
+            alarmDismissType = AlarmDismissType.DISMISS_ALL
+        )
         return NotificationCompat.Builder(applicationContext, ALARM_NOTIFICATION_CHANNEL_ID)
             .setSmallIcon(R.mipmap.ic_launcher)
             .setLargeIcon(BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher))
             .setContentTitle(text)
             .setContentText(label)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .setFullScreenIntent(
-                alarmAlertPendingIntent, true
-            )
-            .addAction(
-                R.drawable.ic_baseline_close_24,
-                "Dismiss this",
-                alarmDismissPendingIntent
-            )
+            .setFullScreenIntent(alarmAlertPendingIntent, true)
+            .addAction(0, "Dismiss this", alarmDismissThisPendingIntent)
+            .addAction(0, "Dismiss all", alarmDismissAllPendingIntent)
             .build()
     }
 

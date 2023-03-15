@@ -7,6 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.example.alarmgroups.alarm.AlarmConstants
+import com.example.alarmgroups.alarm.AlarmDismissType
 import com.example.alarmgroups.alarm.AlarmHelper
 import com.example.alarmgroups.alarm.pendingIntent.alarm_service_pending_intent.createAlarmDismissIntent
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -34,7 +35,7 @@ class AlarmAlertViewModel @Inject constructor(
     fun onEvent(event: AlarmAlertScreenEvents) {
         when (event) {
             is AlarmAlertScreenEvents.OnDismissCurrentClick -> {
-                sendAlarmDismissEventToAlarmReceiver()
+                sendAlarmDismissEventToAlarmReceiver(AlarmDismissType.DISMISS_THIS)
                 _uiState.update {
                     it.copy(
                         dismissThisClick = true
@@ -43,7 +44,7 @@ class AlarmAlertViewModel @Inject constructor(
             }
 
             is AlarmAlertScreenEvents.OnDismissAllClick -> {
-                sendAlarmDismissEventToAlarmReceiver(true)
+                sendAlarmDismissEventToAlarmReceiver(AlarmDismissType.DISMISS_ALL)
                 _uiState.update {
                     it.copy(
                         dismissAllClick = true
@@ -53,13 +54,12 @@ class AlarmAlertViewModel @Inject constructor(
         }
     }
 
-    private fun sendAlarmDismissEventToAlarmReceiver(isDismissAll: Boolean = false) {
-
+    private fun sendAlarmDismissEventToAlarmReceiver(alarmDismissType: AlarmDismissType) {
         val alarmDismissIntent =
             createAlarmDismissIntent(
                 app,
                 notificationId = notificationId,
-                isDismissAll = isDismissAll
+                alarmDismissType = alarmDismissType,
             )
 //         Send this intent to AlarmReceiver
         app.sendBroadcast(alarmDismissIntent)

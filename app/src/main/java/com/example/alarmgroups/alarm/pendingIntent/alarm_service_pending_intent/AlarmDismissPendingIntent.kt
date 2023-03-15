@@ -6,14 +6,17 @@ import android.app.PendingIntent.FLAG_UPDATE_CURRENT
 import android.content.Context
 import android.content.Intent
 import com.example.alarmgroups.alarm.AlarmConstants
+import com.example.alarmgroups.alarm.AlarmDismissType
 import com.example.alarmgroups.alarm.receivers.AlarmReceiver
 
 
 fun createAlarmDismissPendingIntent(
     applicationContext: Context,
-    pendingIntentId: Long
+    pendingIntentId: Long,
+    alarmDismissType: AlarmDismissType
 ): PendingIntent {
-    val alarmDismissIntent = createAlarmDismissIntent(applicationContext, pendingIntentId)
+    val alarmDismissIntent =
+        createAlarmDismissIntent(applicationContext, pendingIntentId, alarmDismissType)
     return PendingIntent.getBroadcast(
         applicationContext,
         pendingIntentId.toInt(),
@@ -25,11 +28,11 @@ fun createAlarmDismissPendingIntent(
 fun createAlarmDismissIntent(
     applicationContext: Context,
     notificationId: Long,
-    isDismissAll: Boolean = false
+    alarmDismissType: AlarmDismissType
 ): Intent {
     return Intent(AlarmConstants.ACTION_ALARM_DISMISSED).apply {
         setClass(applicationContext, AlarmReceiver::class.java)
         putExtra(AlarmConstants.EXTRA_NOTIFICATION_ID, notificationId)
-        putExtra(AlarmConstants.EXTRA_IS_DISMISS_ALL, isDismissAll)
+        putExtra(AlarmConstants.EXTRA_ALARM_DISMISS_TYPE, alarmDismissType.name)
     }
 }
