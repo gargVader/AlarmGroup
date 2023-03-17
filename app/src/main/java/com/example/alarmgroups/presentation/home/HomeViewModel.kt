@@ -72,6 +72,23 @@ class HomeViewModel @Inject constructor(
                     isMultiSelectionMode = newSelectedAlarmList.isNotEmpty()
                 )
             }
+            is HomeScreenEvents.OnGroupAlarmToggleClick -> {
+                val id = event.alarm.id!!
+                viewModelScope.launch {
+                    // update db
+                    alarmRepo.updateAlarmActive(id, event.isActive)
+                    val groupWithAlarms = alarmRepo.getAlarmGroup(alarmId = id)
+                    if (groupWithAlarms?.group?.isActive == true) {
+                        // if group is active, only then use alarmHelper
+                        if (event.isActive) {
+                            scheduleAlarm(event.alarm)
+                        } else {
+                            unscheduleAlarm(event.alarm)
+                        }
+                    }
+                }
+
+            }
         }
     }
 
@@ -152,6 +169,4 @@ class HomeViewModel @Inject constructor(
 
 // TODO: Bug fixes
 //  - getDays exception fix
-//  - When the group is off, but user went inside the group and manually turned on the alarm. In this case
-//    the alarms should have not been scheduled.
 //  - When a group is deleted, it doesn't unschedule the alarms along with it.

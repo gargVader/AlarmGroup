@@ -3,7 +3,6 @@ package com.example.alarmgroups.alarm
 import android.app.AlarmManager
 import android.app.Application
 import android.content.Intent
-import android.util.Log
 import com.example.alarmgroups.alarm.pendingIntent.alarm_manager_pending_intent.createAlarmReceiverPendingIntentForSchedule
 import com.example.alarmgroups.alarm.pendingIntent.alarm_manager_pending_intent.createAlarmReceiverPendingIntentForUnSchedule
 import com.example.alarmgroups.alarm.services.AlarmService
@@ -44,7 +43,6 @@ class AlarmHelperImpl @Inject constructor(
     }
 
     private fun setRepeatingAlarm(dayOfWeek: Int, alarm: Alarm, skipFirstAlarm: Boolean) {
-        Log.d("Girish", "setRepeatingAlarm: dayOfWeek=$dayOfWeek, $alarm")
         val alarmReceiverPendingIntent =
             createAlarmReceiverPendingIntentForSchedule(app, alarm, dayOfWeek)
         val firstAlarmTriggerMillis = alarm.getAlarmFirstTriggerMillis(dayOfWeek) +

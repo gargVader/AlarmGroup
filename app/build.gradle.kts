@@ -14,8 +14,8 @@ android {
         applicationId = "com.girish.alarmgroups"
         minSdk = 26
         targetSdk = 33
-        versionCode = 2
-        versionName = "1.0.0"
+        versionCode = 3
+        versionName = "1.0.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -112,5 +112,8 @@ dependencies {
 
     // Leak Canary
     debugImplementation("com.squareup.leakcanary:leakcanary-android:2.10")
+
+    // Timber
+    implementation("com.jakewharton.timber:timber:5.0.1")
 
 }

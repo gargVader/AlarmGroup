@@ -11,4 +11,5 @@ sealed interface HomeScreenEvents {
     data class OnMultiSelectionMode(val enabled: Boolean) : HomeScreenEvents
     data class OnAlarmSelect(val id: Long) : HomeScreenEvents
     data class OnAlarmUnSelect(val id: Long) : HomeScreenEvents
+    data class OnGroupAlarmToggleClick(val isActive: Boolean, val alarm: Alarm) : HomeScreenEvents
 }

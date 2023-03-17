@@ -126,11 +126,12 @@ fun HomeScreen(
                                             )
                                         },
                                         onAlarmToggleClick = { alarm, isActive ->
-                                            if (isActive) {
-                                                viewModel.scheduleAlarm(alarm)
-                                            } else {
-                                                viewModel.unscheduleAlarm(alarm)
-                                            }
+                                            viewModel.onEvent(
+                                                HomeScreenEvents.OnGroupAlarmToggleClick(
+                                                    isActive,
+                                                    alarm
+                                                )
+                                            )
                                         }
                                     )
                                 }
