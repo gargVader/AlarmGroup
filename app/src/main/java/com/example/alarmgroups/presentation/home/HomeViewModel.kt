@@ -149,3 +149,9 @@ class HomeViewModel @Inject constructor(
     }
      */
 }
+
+// TODO: Bug fixes
+//  - getDays exception fix
+//  - When the group is off, but user went inside the group and manually turned on the alarm. In this case
+//    the alarms should have not been scheduled.
+//  - When a group is deleted, it doesn't unschedule the alarms along with it.

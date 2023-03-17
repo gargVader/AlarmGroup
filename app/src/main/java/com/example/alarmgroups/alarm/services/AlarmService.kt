@@ -105,7 +105,7 @@ class AlarmService : Service() {
         var currentAlarmIdx = Int.MAX_VALUE
         alarms.filter {
             // delay only those alarms which are active and are repeating
-            val isRepeating = it.days?.isNotEmpty() ?: false
+            val isRepeating = !it.days.isNullOrEmpty()
             it.isActive and isRepeating
         }.forEachIndexed { index, alarm ->
             if (alarm.id == currentAlarmId) currentAlarmIdx = index
