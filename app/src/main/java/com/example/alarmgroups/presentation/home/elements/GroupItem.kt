@@ -20,6 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.alarmgroups.domain.model.Alarm
+import com.example.alarmgroups.domain.model.Group
 import com.example.alarmgroups.domain.model.GroupWithAlarms
 import com.example.alarmgroups.presentation.common.CustomSwitchButton
 import com.example.alarmgroups.ui.theme.*
@@ -69,7 +70,9 @@ fun GroupItem(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    modifier = Modifier.padding(bottom = 8.dp, end = 8.dp),
+                    modifier = Modifier
+                        .padding(bottom = 8.dp, end = 8.dp)
+                        .fillMaxWidth(fraction = 0.9f),
                     text = group.label,
                     color = if (group.isActive) grayLight else grayDark,
                     fontSize = MaterialTheme.typography.h5.fontSize,
@@ -129,5 +132,16 @@ fun GroupItem(
 @Preview
 @Composable
 fun PreviewGroupItem() {
-
+    GroupItem(
+        groupWithAlarms = GroupWithAlarms(
+            group = Group(id = 1, label = "This is group text", isActive = true),
+            alarms = listOf()
+        ),
+        onToggleClick = {
+        },
+        onAlarmClick = {
+        },
+        onAlarmToggleClick = { alarm, isActive ->
+        }
+    )
 }
